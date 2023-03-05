@@ -1,50 +1,76 @@
-export type AnyDict = {
-    [key: string]: any
-}
+// export type AnyDict = {
+//     [key: string]: any
+// }
 
 interface Dictionary<T> {
     [Key: string]: T;
 }
+
+export declare interface UILayout {
+    layout_settings?: UISchemaLayoutSettings
+    ui_elements: Dictionary<UISchemaUIElement>
+}
+export declare interface UISchema extends UILayout{
+    header: UISchemaHeaderDict
+    meta?: UISchemaMetaSettings
+    dsd?: UISchemaDSDDict
+}
+
 export declare interface UISchemaHeaderDict {
     version: number
 }
+
+export declare interface UISchemaMetaSettings {
+    scenario?: string
+}
+
 export declare interface UISchemaDSDDict {
     [key:string]: string[]
 }
 
 export declare interface UISchemaLayoutSettings{
-    scenario?: string
     orchestration_strategy?: string
     order?: string[]
+}
+
+export declare interface UISchemaUIElement {
+    binding?: UISchemaUIElementBinding
+    layout?: UISchemaUIElementLayoutSettings
+    element_type: UISchemaUIElementType
 }
 
 export declare interface UISchemaUIElementBinding {
     field_name: string
 }
 
-export declare interface UISchemaUIElementLayout {
-    min_width?: number
-    max_width?: number
+export declare interface UISchemaUIElementLayoutSettings {
+    min_width?: number | "max"
+    padding?: number | string | UISchemaLayoutPadding
+}
+
+export declare interface UISchemaLayoutPadding {
+    top: number,
+    right: number,
+    bottom: number,
+    left: number
 }
 
 export declare interface UISchemaUIElementType {
     name: string
     text?: string
+    padding?: number | string | UISchemaLayoutPadding
 }
 
-export declare interface UISchemaUIElement {
-    binding?: UISchemaUIElementBinding
-    layout?: UISchemaUIElementLayout
-    element_type: UISchemaUIElementType
+export declare interface UISchemaLayoutElement extends UISchemaUIElementType, UILayout {
+    name: "layout"
+    layout?: UISchemaUIElementLayoutSettings
+}
+
+export declare interface UISchemaButton extends UISchemaUIElementType {
+    name: "button"
+    type?: "okButton" | "cancelButton" | "iconButton"
 }
 
 // export declare interface UISchemaUIElements {
 //     [key: string]: UISchemaUIElement
 // }
-
-export declare interface UISchema {
-    header: UISchemaHeaderDict
-    dsd?: UISchemaDSDDict
-    layout_settings?: UISchemaLayoutSettings
-    ui_elements: Dictionary<UISchemaUIElement>
-}

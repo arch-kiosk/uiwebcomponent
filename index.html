@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!--link rel="stylesheet" href="./src/index.css" -->
+    <link rel="stylesheet" href="/defaults.css">
     <script type="module" src="/src/ui-component.ts"></script>
+    <script src="/test-json.js"></script>
 
   </head>
   <body>
@@ -12,39 +13,7 @@
     </ui-component>
   <script>
     ui = document.getElementById("ui")
-    let json = `{
-    "header": {
-      "version": 1},
-    "dsd": {
-      "context_id": ["datatype(varchar), identifier()"],
-      "text_filter": ["datatype(varchar)"]
-    },
-    "layout_settings": {
-      "orchestration_strategy": "columns"
-    },
-    "ui_elements": {
-      "context_id": {
-        "binding": {
-          "field_name": "context_id"
-        },
-        "element_type": {
-          "name": "TextField",
-          "text": "context-id",
-          "is_identifier": true
-        }
-      },
-      "text_filter": {
-        "binding": {
-          "field_name": "text_filter"
-        },
-        "element_type": {
-          "name": "TextField",
-          "text": "text_filter"
-        }
-      }
-     }
-    }`
-    ui_schema = JSON.parse(json)
+    // ui_schema = JSON.parse(json)
     console.log(ui_schema)
     ui.ui_schema = ui_schema
   </script>
