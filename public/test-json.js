@@ -26,9 +26,9 @@ ui_schema = {
                 "layout": {
                     "padding": {
                         "top": ".5em",
-                        "right": "1em",
+                        "right": ".5em",
                         "bottom": "1em",
-                        "left": "1em",
+                        "left": ".5em",
                     }
                 },
                 "layout_settings": {
@@ -43,9 +43,12 @@ ui_schema = {
                             "min_width": "2",
                         },
                         "element_type": {
-                            "name": "TextField",
+                            "name": "Selection",
                             "text": "context-id",
-                            "is_identifier": true
+                            "is_identifier": true,
+                            "items": {
+                                "topic": "my topic"
+                            }
                         }
                     },
                     "2": {
@@ -68,8 +71,20 @@ ui_schema = {
                             "min_width": 2
                         },
                         "element_type": {
-                            "name": "TextField",
+                            "name": "DateField",
                             "text": "date field"
+                        },
+                    },
+                    "4": {
+                        "binding": {
+                            "field_name": "modified"
+                        },
+                        "layout": {
+                            "min_width": 2
+                        },
+                        "element_type": {
+                            "name": "DateTimeField",
+                            "text": "date time field"
                         },
                     },
                 }

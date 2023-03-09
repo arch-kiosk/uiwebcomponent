@@ -2,6 +2,9 @@
 //     [key: string]: any
 // }
 
+import {ComboBoxDataProviderParams} from "@vaadin/combo-box";
+import {ComboBoxDataProviderCallback} from "@vaadin/combo-box/src/vaadin-combo-box-data-provider-mixin";
+
 interface Dictionary<T> {
     [Key: string]: T;
 }
@@ -70,6 +73,18 @@ export declare interface UISchemaButton extends UISchemaUIElementType {
     name: "button"
     type?: "okButton" | "cancelButton" | "iconButton"
 }
+
+export declare interface UISchemaComboBox extends UISchemaUIElementType {
+    name: "combobox"
+    items: Array<string> | UISchemaApiList
+}
+
+export declare interface UISchemaApiList {
+    topic: string
+}
+
+export type UISchemaLookupProvider = (elementId: string, params: ComboBoxDataProviderParams<any>, callback: ComboBoxDataProviderCallback<TItem>) => void;
+
 
 // export declare interface UISchemaUIElements {
 //     [key: string]: UISchemaUIElement

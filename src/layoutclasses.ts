@@ -1,4 +1,4 @@
-import {UISchemaLayoutPadding, UISchemaLayoutSettings, UISchemaUIElementLayoutSettings} from "./uischema"
+import {UISchemaLayoutSettings, UISchemaUIElementLayoutSettings} from "./uischema"
 export abstract class UILayoutClass {
     layoutSettings?: UISchemaLayoutSettings
     abstract cssClass: string

@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/defaults.css">
+    <link rel="stylesheet" href="/test.css">
     <script type="module" src="/src/ui-component.ts"></script>
     <script src="/test-json.js"></script>
-
+    <title>UI Component Test</title>
   </head>
   <body>
     <ui-component id="ui" >
@@ -16,6 +17,14 @@
     // ui_schema = JSON.parse(json)
     console.log(ui_schema)
     ui.ui_schema = ui_schema
+    ui.lookupProvider = (id, params, callback) => {
+      console.log(id, params)
+      let l = []
+      for (let i=1;i<=params.pageSize;i++) {
+        l.push(`${params.page}: ${i.toString()}`)
+      }
+      callback(l, 3500)
+    }
   </script>
   </body>
 </html>

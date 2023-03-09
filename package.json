@@ -17,11 +17,14 @@
     "build": "tsc && vite build"
   },
   "dependencies": {
+    "@vaadin/combo-box": "^24.0.0",
+    "@vaadin/date-picker": "^24.0.0",
+    "@vaadin/date-time-picker": "^24.0.0",
     "lit": "^2.6.1"
   },
   "devDependencies": {
-    "typescript": "^4.9.5",
     "sass": "^1.58.0",
+    "typescript": "^4.9.5",
     "vite": "^4.1.0"
   }
 }

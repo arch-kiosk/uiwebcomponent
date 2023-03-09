@@ -26,6 +26,7 @@ dist-ssr
 
 *.zip
 .env.development.local
-/src/*.css
-/src/*.css.map
-
+/src/**/*.css
+/src/**/*.css.map
+/public/**/*.css
+/public/**/*.css.map

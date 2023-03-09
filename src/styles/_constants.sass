@@ -16,99 +16,99 @@ $screen-max-600: "only screen and (max-width : 600px)"
 $screen-max-500: "only screen and (max-width : 500px)"
 
 //font families
-$standard-text: var(--standard-text-font)
-$main-headline-text: var(--main-headline-text-font)
-$monospace: var(--monospace-font)
-$headline-text: var(--headline-text-font)
+$standard-text: var(--ui-standard-text-font, var(--standard-text-font))
+$main-headline-text: var(--ui-main-headline-text-font, var(--main-headline-text-font))
+$monospace: var(--ui-monospace-font, var(--monospace-font))
+$headline-text: var(--ui-headline-text-font, var(--headline-text-font))
 $fontawesome-font-family: "Font Awesome 5 Free"
-$button-text: var(--button-text-font)
+$button-text: var(--ui-button-text-font, var(--button-text-font))
 
 //font sizes
 //created with http://type-scale.com/, perfect fourth
-$font-size-standard: var(--font-size-standard, 1rem)
-$font-size-h1: var(--font-size-h1)
-$font-size-h2: var(--font-size-h2)
-$font-size-h3: var(--font-size-h3)
-$font-size-h4: var(--font-size-h4)
-$font-small: var(--font-size-small)
-$font-size-button: var(--font-size-button)
+$font-size-standard: var(--ui-font-size-standard, var(--font-size-standard, 1rem))
+$font-size-h1: var(--ui-font-size-h1, var(--font-size-h1))
+$font-size-h2: var(--ui-font-size-h2, var(--font-size-h2))
+$font-size-h3: var(--ui-font-size-h3, var(--font-size-h3))
+$font-size-h4: var(--ui-font-size-h4, var(--font-size-h4))
+$font-small: var(--ui-font-size-small, var(--font-size-small))
+$font-size-button: var(--ui-font-size-button, var(--font-size-button))
 $font-size-small: $font-small
 
 //line heights
-$line-height-std: 1.5em
+$line-height-std: var(--ui-line-height-std, var(--line-height-std, 1.5em))
 
 //images
-$header-logo-img: var(--header-logo-img)
-$header-logo-width: var(--header-logo-width, 180px)
-$header-logo-height: var(--header-logo-height, 120px)
-$current-user-image: var(--current-user-svg)
+$header-logo-img: var(--ui-header-logo-img, var(--header-logo-img))
+$header-logo-width: var(--ui-header-logo-width, var(--header-logo-width, 180px))
+$header-logo-height: var(--ui-header-logo-height, var(--header-logo-height, 120px))
+$current-user-image: var(--ui-current-user-svg, var(--current-user-svg))
 
 //colors
-$color-warning-accent: var(--color-warning-accent)
-$color-error-accent: var(--color-error-accent)
-$color-info-accent: var(--color-info-accent)
+$color-warning-accent: var(--ui-color-warning-accent, var(--color-warning-accent))
+$color-error-accent: var(--ui-color-error-accent, var(--color-error-accent))
+$color-info-accent: var(--ui-color-info-accent, var(--color-info-accent))
 
 //color sass variables
-$col-bg-body-lighter: var(--col-bg-body-lighter)
-$col-bg-body: var(--col-bg-body)
-$col-bg-body-darker: var(--col-bg-body-darker)
+$col-bg-body-lighter: var(--ui-col-bg-body-lighter, var(--col-bg-body-lighter))
+$col-bg-body: var(--ui-col-bg-body, var(--col-bg-body))
+$col-bg-body-darker: var(--ui-col-bg-body-darker, var(--col-bg-body-darker))
 
-$col-bg-1-lighter: var(--col-bg-1-lighter)
-$col-bg-1: var(--col-bg-1)
-$col-bg-1-darker: var(--col-bg-1-darker)
-$col-bg-1-input: var(--col-bg-1-input)
+$col-bg-1-lighter: var(--ui-col-bg-1-lighter, var(--col-bg-1-lighter))
+$col-bg-1: var(--ui-col-bg-1, var(--ui-col-bg-1, var(--col-bg-1)))
+$col-bg-1-darker: var(--ui-col-bg-1-darker, var(--col-bg-1-darker))
+$col-bg-1-input: var(--ui-col-bg-1-input, var(--col-bg-1-input))
 
-$col-primary-bg-1: var(--col-primary-bg-1)
-$col-accent-bg-1: var(--col-accent-bg-1)
-$col-warning-bg-1: var(--col-warning-bg-1)
-$col-success-bg-1: var(--col-success-bg-1)
-$col-error-bg-1: var(--col-error-bg-1)
+$col-primary-bg-1: var(--ui-col-primary-bg-1, var(--col-primary-bg-1))
+$col-accent-bg-1: var(--ui-col-accent-bg-1, var(--col-accent-bg-1))
+$col-warning-bg-1: var(--ui-col-warning-bg-1, var(--col-warning-bg-1))
+$col-success-bg-1: var(--ui-col-success-bg-1, var(--col-success-bg-1))
+$col-error-bg-1: var(--ui-col-error-bg-1, var(--col-error-bg-1))
 
-$col-bg-2-lighter: var(--col-bg-2-lighter)
-$col-bg-2: var(--col-bg-2)
-$col-bg-2-darker: var(--col-bg-2-darker)
-$col-bg-2-button: var(--col-bg-2-button)
-$col-bg-2-input: var(--col-bg-2-input)
-$col-primary-bg-2: var(--col-primary-bg-2)
-$col-accent-bg-2: var(--col-accent-bg-2)
-$col-warning-bg-2: var(--col-warning-bg-2)
-$col-success-bg-2: var(--col-success-bg-2)
-$col-error-bg-2: var(--col-error-bg-2)
+$col-bg-2-lighter: var(--ui-col-bg-2-lighter, var(--col-bg-2-lighter))
+$col-bg-2: var(--ui-col-bg-2, var(--col-bg-2))
+$col-bg-2-darker: var(--ui-col-bg-2-darker, var(--col-bg-2-darker))
+$col-bg-2-button: var(--ui-col-bg-2-button, var(--col-bg-2-button))
+$col-bg-2-input: var(--ui-col-bg-2-input, var(--col-bg-2-input))
+$col-primary-bg-2: var(--ui-col-primary-bg-2, var(--col-primary-bg-2))
+$col-accent-bg-2: var(--ui-col-accent-bg-2, var(--col-accent-bg-2))
+$col-warning-bg-2: var(--ui-col-warning-bg-2, var(--col-warning-bg-2))
+$col-success-bg-2: var(--ui-col-success-bg-2, var(--col-success-bg-2))
+$col-error-bg-2: var(--ui-col-error-bg-2, var(--col-error-bg-2))
 
-$col-bg-3-lighter: var(--col-bg-3-lighter)
-$col-bg-3: var(--col-bg-3)
-$col-bg-3-darker: var(--col-bg-3-darker)
-$col-bg-3-button: var(--col-bg-3-button)
-$col-bg-3-input: var(--col-bg-3-input)
-$col-primary-bg-3: var(--col-primary-bg-3)
-$col-accent-bg-3: var(--col-accent-bg-3)
-$col-warning-bg-3: var(--col-warning-bg-3)
-$col-success-bg-3: var(--col-success-bg-3)
-$col-error-bg-3: var(--col-error-bg-3)
+$col-bg-3-lighter: var(--ui-col-bg-3-lighter, var(--col-bg-3-lighter))
+$col-bg-3: var(--ui-col-bg-3, var(--col-bg-3))
+$col-bg-3-darker: var(--ui-col-bg-3-darker, var(--col-bg-3-darker))
+$col-bg-3-button: var(--ui-col-bg-3-button, var(--col-bg-3-button))
+$col-bg-3-input: var(--ui-col-bg-3-input,var(--col-bg-3-input))
+$col-primary-bg-3: var(--ui-col-primary-bg-3, var(--col-primary-bg-3))
+$col-accent-bg-3: var(--ui-col-accent-bg-3,var(--col-accent-bg-3))
+$col-warning-bg-3: var(--ui-col-warning-bg-3,var(--col-warning-bg-3))
+$col-success-bg-3: var(--ui-col-success-bg-3, var(--col-success-bg-3))
+$col-error-bg-3: var(--ui-col-error-bg-3, var(--col-error-bg-3))
 
-$col-bg-ack-lighter: var(--col-bg-ack-lighter)
-$col-bg-ack: var(--col-bg-ack)
-$col-bg-ack-darker: var(--col-bg-ack-darker)
-$col-primary-bg-ack: var(--col-primary-bg-ack)
-$col-accent-bg-ack: var(--col-accent-bg-ack)
+$col-bg-ack-lighter: var(--ui-col-bg-ack-lighter, var(--col-bg-ack-lighter))
+$col-bg-ack: var(--ui-col-bg-ack, var(--col-bg-ack))
+$col-bg-ack-darker: var(--ui-col-bg-ack-darker, var(--col-bg-ack-darker))
+$col-primary-bg-ack: var(--ui-col-primary-bg-ack, var(--col-primary-bg-ack))
+$col-accent-bg-ack: var(--ui-col-accent-bg-ack, var(--col-accent-bg-ack))
 
-$col-bg-att-lighter: var(--col-bg-att-lighter)
-$col-bg-att: var(--col-bg-att)
-$col-bg-att-darker: var(--col-bg-att-darker)
-$col-primary-bg-att: var(--col-primary-bg-att)
-$col-accent-bg-att: var(--col-accent-bg-att)
+$col-bg-att-lighter: var(--ui-col-bg-att-lighter, var(--col-bg-att-lighter))
+$col-bg-att: var(--ui-col-bg-att, var(--col-bg-att))
+$col-bg-att-darker: var(--ui-col-bg-att-darker, var(--col-bg-att-darker))
+$col-primary-bg-att: var(--ui-col-primary-bg-att, var(--col-primary-bg-att))
+$col-accent-bg-att: var(--ui-col-accent-bg-att, var(--col-accent-bg-att))
 
-$col-bg-alert-lighter: var(--col-bg-alert-lighter)
-$col-bg-alert: var(--col-bg-alert)
-$col-bg-alert-darker: var(--col-bg-alert-darker)
-$col-primary-bg-alert: var(--col-primary-bg-alert)
-$col-accent-bg-alert: var(--col-accent-bg-alert)
+$col-bg-alert-lighter: var(--ui-col-bg-alert-lighter, var(--col-bg-alert-lighter))
+$col-bg-alert: var(--ui-col-bg-alert, var(--col-bg-alert))
+$col-bg-alert-darker: var(--ui-col-bg-alert-darker, var(--col-bg-alert-darker))
+$col-primary-bg-alert: var(--ui-col-primary-bg-alert, var(--col-primary-bg-alert))
+$col-accent-bg-alert: var(--ui-col-accent-bg-alert, var(--col-accent-bg-alert))
 
-$col-bg-btn-lighter: var(--col-bg-btn-lighter)
-$col-bg-btn: var(--col-bg-btn)
-$col-bg-btn-darker: var(--col-bg-btn-darker)
-$col-primary-bg-btn: var(--col-primary-bg-btn)
-$col-accent-bg-btn: var(--col-accent-bg-btn)
+$col-bg-btn-lighter: var(--ui-col-bg-btn-lighter, var(--col-bg-btn-lighter))
+$col-bg-btn: var(--ui-col-bg-btn, var(--col-bg-btn))
+$col-bg-btn-darker: var(--ui-col-bg-btn-darker, var(--col-bg-btn-darker))
+$col-primary-bg-btn: var(--ui-col-primary-bg-btn, var(--col-primary-bg-btn))
+$col-accent-bg-btn: var(--ui-col-accent-bg-btn, var(--col-accent-bg-btn))
 
 //gradients
 $col-bg-body-gradient: linear-gradient(to right bottom, $col-bg-body-darker, $col-bg-body-lighter)
@@ -118,10 +118,6 @@ $col-bg-3-gradient: linear-gradient(to right bottom, $col-bg-3-darker, $col-bg-3
 $col-bg-ack-gradient: linear-gradient(to right bottom, $col-bg-ack-darker, $col-bg-ack-lighter)
 $col-bg-att-gradient: linear-gradient(to right bottom, $col-bg-att-darker, $col-bg-att-lighter)
 $col-bg-alert-gradient: linear-gradient(135deg, $col-bg-alert-darker, $col-bg-alert-lighter)
-
-//special colors
-$col-bg-kiosk-version: var(--col-bg-kiosk-version, $col-bg-2)
-
 
 //color classes
 .col-bg-body-lighter
@@ -235,26 +231,6 @@ $col-bg-kiosk-version: var(--col-bg-kiosk-version, $col-bg-2)
   background-color: $col-primary-bg-btn
 .col-accent-bg-btn
   background-color: $col-accent-bg-btn
-
-//legacy colors
-$color-white: white
-$color-black: black
-$color-background: $col-bg-1
-$color-background-static: $col-bg-1
-$color-background-transparent: $col-bg-1-lighter
-$color-background-light: $col-bg-1-lighter
-$color-headline: $col-primary-bg-1
-$color-headline-shadow: rgb(0,0,0,.2)
-$color-light-grey: var(--color-light-grey)
-$sand: var(--color-sand)
-$color-sand-light: var(--color-sand-light)
-$color-sand-static: #fea
-$color-sand-light-static: rgba(255, 238, 170, 0.7)
-$reddish: $col-error-bg-1
-$color-error-bg: $col-bg-alert
-$color-warning-bg: $col-bg-att
-$color-info-bg: $col-bg-ack
-$color-green: $col-success-bg-1
 
 /* patterns */
 $pattern-diagonal-stripes-sm: repeating-linear-gradient(45deg, transparent, transparent 10px, currentColor 10px, currentColor calc(2 * 10px))

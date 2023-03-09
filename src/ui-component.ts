@@ -1,6 +1,9 @@
 import {unsafeCSS, LitElement, TemplateResult} from "lit";
 import { html } from 'lit/static-html.js'
 import { customElement, property } from "lit/decorators.js";
+import '@vaadin/date-picker'
+import '@vaadin/date-time-picker'
+import '@vaadin/combo-box'
 
 // import local_css from "/src/static/logviewerapp.sass?inline";
 // @ts-ignore
@@ -11,7 +14,7 @@ import {
     UISchemaLayoutElement,
     UILayout,
     UISchemaLayoutSettings,
-    UISchemaLayoutPadding
+    UISchemaLayoutPadding, UISchemaButton, UISchemaComboBox, UISchemaLookupProvider
 } from "./uischema";
 import {UIStackLayoutClass,UIColumnLayoutClass,UILayoutClass,UIRightAlignLayoutClass} from "./layoutclasses"
 
@@ -24,6 +27,9 @@ export class UIComponent extends LitElement {
     @property()
     ui_schema: UISchema | null = null
 
+    @property()
+    lookupProvider: UISchemaLookupProvider | null = null
+
     // @state()
     // inSelectQueryMode = true;
 
@@ -32,8 +38,16 @@ export class UIComponent extends LitElement {
     }
 
     firstUpdated(_changedProperties: any) {
-        console.log("App first updated.");
         super.firstUpdated(_changedProperties);
+
+        for (const comboBox of this.renderRoot.querySelectorAll('vaadin-combo-box')) {
+            if (comboBox && this.lookupProvider) {
+                let lookupProvider = this.lookupProvider
+                comboBox.dataProvider = async (params, callback) => {
+                    lookupProvider(comboBox.id, params, callback)
+                }
+            }
+        }
     }
 
     updated(_changedProperties: any) {
@@ -64,6 +78,24 @@ export class UIComponent extends LitElement {
         `
     }
 
+    renderDateField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
+        return html`
+            <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
+                <label for="${id}">${entry.element_type.text!}</label> 
+                <vaadin-date-picker id=${id} name=${id}></vaadin-date-picker>
+            </div>
+        `
+    }
+
+    renderDateTimeField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
+        return html`
+            <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
+                <label for="${id}">${entry.element_type.text!}</label> 
+                <vaadin-date-time-picker id=${id} name=${id}></vaadin-date-time-picker>
+            </div>
+        `
+    }
+
     renderButton(id: string, entry: UISchemaUIElement) {
         const button = <UISchemaButton>entry.element_type
         let buttonClass = "modal-button"
@@ -82,6 +114,33 @@ export class UIComponent extends LitElement {
         `
     }
 
+    renderComboBox(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
+        const element = <UISchemaComboBox>entry.element_type
+        if (Array.isArray(element.items)) {
+            return html`
+            <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
+                <label for="${id}">${entry.element_type.text!}</label> 
+                <vaadin-combo-box id=${id} name=${id} .items="${element.items}"></vaadin-combo-box>
+            </div>
+        `
+        } else {
+            if (element.items && 'topic' in element.items) {
+                return html`
+                    <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
+                        <label for="${id}">${entry.element_type.text!}</label> 
+                        <vaadin-combo-box id=${id} name=${id}></vaadin-combo-box>
+                    </div>
+                `
+            } else {
+                return html`
+            <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
+                <label for="${id}">${entry.element_type.text!}</label> 
+                <div>selection field ${id} is missing a list.</div>
+            </div>`
+            }
+        }
+    }
+
     renderLine(id: string, entry: UISchemaUIElement) {
         return html`
             <div class="ui-line" id="${id}" style="${this.getPaddingStyle(entry.element_type.padding).replace("padding", "margin")}">
@@ -93,6 +152,12 @@ export class UIComponent extends LitElement {
         switch (entry.element_type.name.toLowerCase()) {
             case "textfield":
                 return this.renderTextField(id, entry, layouter)
+            case "selection":
+                return this.renderComboBox(id, entry, layouter)
+            case "datefield":
+                return this.renderDateField(id, entry, layouter)
+            case "datetimefield":
+                return this.renderDateTimeField(id, entry, layouter)
             case "layout":
                 return this.renderLayoutElement(id, <UISchemaLayoutElement>entry.element_type, layouter)
             case "button":
