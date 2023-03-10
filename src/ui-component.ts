@@ -1,6 +1,6 @@
-import {unsafeCSS, LitElement, TemplateResult} from "lit";
+import {unsafeCSS, LitElement, TemplateResult, PropertyValues, nothing} from "lit";
 import { html } from 'lit/static-html.js'
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import '@vaadin/date-picker'
 import '@vaadin/date-time-picker'
 import '@vaadin/combo-box'
@@ -8,13 +8,15 @@ import '@vaadin/combo-box'
 // import local_css from "/src/static/logviewerapp.sass?inline";
 // @ts-ignore
 import local_css from "./styles/ui-component.sass?inline";
+import {replaceData} from "./tools"
 import {
     UISchema,
+    UIInputData,
     UISchemaUIElement,
     UISchemaLayoutElement,
     UILayout,
     UISchemaLayoutSettings,
-    UISchemaLayoutPadding, UISchemaButton, UISchemaComboBox, UISchemaLookupProvider
+    UISchemaLayoutPadding, UISchemaButton, UISchemaComboBox, UISchemaLookupProvider, Dictionary, UISchemaUIElementWithId
 } from "./uischema";
 import {UIStackLayoutClass,UIColumnLayoutClass,UILayoutClass,UIRightAlignLayoutClass} from "./layoutclasses"
 
@@ -22,23 +24,35 @@ import {UIStackLayoutClass,UIColumnLayoutClass,UILayoutClass,UIRightAlignLayoutC
 export class UIComponent extends LitElement {
     static styles = unsafeCSS(local_css);
     _messages: { [key: string]: object } = {};
-
+    _dsd_to_element_list: {[key: string]: UISchemaUIElementWithId} = {}
 
     @property()
-    ui_schema: UISchema | null = null
+    uiSchema: UISchema | null = null
+
+    @property()
+    data: UIInputData = {}
 
     @property()
     lookupProvider: UISchemaLookupProvider | null = null
 
-    // @state()
-    // inSelectQueryMode = true;
+    @state()
+    _showError: string | null = null
 
     constructor() {
         super();
+        // this.addEventListener('click', (e) => console.log(e), {capture: true});
+    }
+
+    protected willUpdate(_changedProperties: PropertyValues) {
+        // super.willUpdate(_changedProperties);
+        if (_changedProperties.has("uiSchema")) {
+            this.processSchemaDefinition()
+        }
     }
 
     firstUpdated(_changedProperties: any) {
         super.firstUpdated(_changedProperties);
+
 
         for (const comboBox of this.renderRoot.querySelectorAll('vaadin-combo-box')) {
             if (comboBox && this.lookupProvider) {
@@ -52,9 +66,77 @@ export class UIComponent extends LitElement {
 
     updated(_changedProperties: any) {
         super.updated(_changedProperties);
-        // if (_changedProperties.has("apiContext")) {
-        //     if (this.apiContext) console.log("starting app");
-        // }
+    }
+
+    processSchemaDefinition() {
+        function _add_elements(ui_elements?: Dictionary<UISchemaUIElement>) {
+            if (ui_elements) {
+                Object.entries(ui_elements).map(([id, entry]) => {
+                    const regex = new RegExp('^[a-z][a-z0-9\\-_]*$',"gmi")
+                    if (!id.match(regex)) {
+                        console.log(`element id ${id} is illegal`)
+                        showError = `There is an error in the schema definition: the element id "${id}" is illegal. It must start with a letter followed by only letters and numbers`
+                        return
+                    }
+                    if (id in id_list) {
+                        console.log(`element id ${id} used more than once in UI schema`)
+                        showError = `There is an error in the schema definition: the element id "${id}" is used more than once in the UI schema`
+                        return
+                    }
+                    id_list.push(id)
+                    const dsd_field = entry.binding?.field_name?.toLowerCase()
+                    if (dsd_field) {
+                        if (dsd_field in dsd_to_element_list) {
+                            console.log(`dsd field ${dsd_field} bound again in element ${id} in UI schema`)
+                            showError = `There is an error in the schema definition: dsd field "${dsd_field}" bound again in element "${id}" in UI schema`
+                        } else {
+                            dsd_to_element_list[dsd_field] = {"id": id, "element": entry}
+                        }
+                    }
+                    if (entry.element_type.name === "layout") {
+                        _add_elements((<UISchemaLayoutElement>entry.element_type).ui_elements)
+                    }
+                })
+            }
+        }
+
+        this._dsd_to_element_list = {}
+        const id_list: Array<string> = []
+        let showError = ""
+        const dsd_to_element_list = this._dsd_to_element_list
+        if (this.uiSchema) {
+            _add_elements(this.uiSchema.ui_elements)
+        }
+        this._showError = showError
+        console.log(this._dsd_to_element_list)
+    }
+
+    gatherData() {
+        const result: {[key: string]: any} = {}
+        if (!this._dsd_to_element_list || Object.keys(this._dsd_to_element_list).length === 0) return {}
+        Object.entries(this._dsd_to_element_list).map(([dsd_field, element_entry]) => {
+            result[dsd_field] = this.get_field_value(element_entry.id, element_entry.element)
+        })
+        return result
+    }
+
+    get_field_value(id: string) {
+        const domElement: HTMLFormElement | null = this.renderRoot.querySelector(`#${id}`)
+        return domElement?.value?domElement?.value:""
+    }
+
+    fieldChanged(e: Event) {
+        if ("currentTarget" in e) {
+            const id = (<HTMLElement>e.currentTarget).id
+            const options = {
+                detail: {
+                    "srcElement": id,
+                    "newData": this.gatherData()
+                },
+                bubbles: true
+            }
+            this.dispatchEvent(new CustomEvent('dataChanged', options))
+        }
     }
 
     getLayoutClass(layoutSettings?: UISchemaLayoutSettings): UILayoutClass | null {
@@ -70,28 +152,37 @@ export class UIComponent extends LitElement {
     }
 
     renderTextField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
+        const value = replaceData(entry.element_type.value, this.data)
         return html`
             <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
                 <label for="${id}">${entry.element_type.text!}</label> 
-                <input id=${id} name=${id} type="text"/>
+                <input id=${id} name=${id} type="text" 
+                       value="${value || nothing}"
+                       @change="${this.fieldChanged}"/>
             </div>
         `
     }
 
     renderDateField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
+        const value = replaceData(entry.element_type.value, this.data)
         return html`
             <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
                 <label for="${id}">${entry.element_type.text!}</label> 
-                <vaadin-date-picker id=${id} name=${id}></vaadin-date-picker>
+                <vaadin-date-picker id=${id} name=${id}
+                                    value="${value || nothing}"
+                                    @change="${this.fieldChanged}"></vaadin-date-picker>
             </div>
         `
     }
 
     renderDateTimeField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
+        const value = replaceData(entry.element_type.value, this.data)
         return html`
             <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
                 <label for="${id}">${entry.element_type.text!}</label> 
-                <vaadin-date-time-picker id=${id} name=${id}></vaadin-date-time-picker>
+                <vaadin-date-time-picker id=${id} name=${id}
+                                         value="${value || nothing}"
+                                         @change="${this.fieldChanged}"></vaadin-date-time-picker>
             </div>
         `
     }
@@ -108,7 +199,7 @@ export class UIComponent extends LitElement {
             default: break
         }
         return html`
-            <button class="${buttonClass}" id=${id} name=${id}">
+            <button class="${buttonClass}" id=${id} name=${id} @click="${this.fieldChanged}"">
                 ${entry.element_type.text!} 
             </button>
         `
@@ -116,11 +207,14 @@ export class UIComponent extends LitElement {
 
     renderComboBox(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
         const element = <UISchemaComboBox>entry.element_type
+        const value = replaceData(entry.element_type.value, this.data)
         if (Array.isArray(element.items)) {
             return html`
             <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
                 <label for="${id}">${entry.element_type.text!}</label> 
-                <vaadin-combo-box id=${id} name=${id} .items="${element.items}"></vaadin-combo-box>
+                <vaadin-combo-box id="${id}" name="${id}" .items="${element.items}"
+                                  value="${value || nothing}"
+                                  @change="${this.fieldChanged}"></vaadin-combo-box>
             </div>
         `
         } else {
@@ -128,7 +222,9 @@ export class UIComponent extends LitElement {
                 return html`
                     <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
                         <label for="${id}">${entry.element_type.text!}</label> 
-                        <vaadin-combo-box id=${id} name=${id}></vaadin-combo-box>
+                        <vaadin-combo-box id="${id}" name="${id}"
+                                          .selectedItem="${value || nothing}"
+                                          @change="${this.fieldChanged}"></vaadin-combo-box>
                     </div>
                 `
             } else {
@@ -148,10 +244,26 @@ export class UIComponent extends LitElement {
         `
     }
 
+    renderTemplateLabel(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
+        const templateLabel = <UISchemaTemplateLabel>entry.element_type
+        const value = replaceData(entry.element_type.value, this.data)
+        const htmlClass = templateLabel.style?`templateLabel ${templateLabel.style}`:'templateLabel'
+        return html`
+            <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
+                ${entry.element_type.text?html`<label for="${id}">${entry.element_type.text!}</label>`:nothing} 
+                <div class="${htmlClass}" id=${id}>
+                    ${value || nothing}
+                </div>
+            </div>
+        `
+    }
+
     renderElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
         switch (entry.element_type.name.toLowerCase()) {
             case "textfield":
                 return this.renderTextField(id, entry, layouter)
+            case "templatelabel":
+                return this.renderTemplateLabel(id, entry, layouter)
             case "selection":
                 return this.renderComboBox(id, entry, layouter)
             case "datefield":
@@ -204,12 +316,18 @@ export class UIComponent extends LitElement {
     }
 
     render() {
-        const layoutClass = this.getLayoutClass(this.ui_schema?.layout_settings)
-        if (!layoutClass) return html`Unknown Orchestration Strategy "${this.ui_schema?.layout_settings?.orchestration_strategy}"`
-        if (this.ui_schema)
-            return this.renderLayout(this.ui_schema, layoutClass)
-        else
-            return html``
-
+        console.log("rendering...")
+        const layoutClass = this.getLayoutClass(this.uiSchema?.layout_settings)
+        if (!layoutClass) {
+            this._showError = `The schema definition is calling an unknown Orchestration Strategy "${this.uiSchema?.layout_settings?.orchestration_strategy}"`
+        }
+        if (this._showError) {
+            return html`<div style="background-color: var(--col-bg-alert); color: var(--col-primary-bg-alert); padding: .5em; font-family: monospace">${this._showError}</div>`
+        } else {
+            if (this.uiSchema && layoutClass)
+                return this.renderLayout(this.uiSchema, layoutClass)
+            else
+                return html``
+        }
     }
 }

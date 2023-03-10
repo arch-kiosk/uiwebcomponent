@@ -16,7 +16,13 @@
     ui = document.getElementById("ui")
     // ui_schema = JSON.parse(json)
     console.log(ui_schema)
-    ui.ui_schema = ui_schema
+    ui.data = {"e1": "54: 26",
+               "e2": "my filter",
+               "e3": "2012-02-28",
+               "e4": "2012-02-28T00:15",
+               "e5TemplateLabel": "This is my template label"
+    }
+    ui.uiSchema = ui_schema
     ui.lookupProvider = (id, params, callback) => {
       console.log(id, params)
       let l = []
@@ -25,6 +31,9 @@
       }
       callback(l, 3500)
     }
+    ui.addEventListener("dataChanged", (event) => {
+      console.log(event.detail.newData)
+    })
   </script>
   </body>
 </html>

@@ -42,6 +42,11 @@ export declare interface UISchemaUIElement {
     element_type: UISchemaUIElementType
 }
 
+export declare interface UISchemaUIElementWithId {
+    id: string
+    element: UISchemaUIElement
+}
+
 export declare interface UISchemaUIElementBinding {
     field_name: string
 }
@@ -61,6 +66,7 @@ export declare interface UISchemaLayoutPadding {
 export declare interface UISchemaUIElementType {
     name: string
     text?: string
+    value?: string
     padding?: number | string | UISchemaLayoutPadding
 }
 
@@ -79,12 +85,18 @@ export declare interface UISchemaComboBox extends UISchemaUIElementType {
     items: Array<string> | UISchemaApiList
 }
 
+export declare interface UISchemaTemplateLabel extends UISchemaUIElementType {
+    name: "templatelabel"
+    style?: string
+}
+
 export declare interface UISchemaApiList {
     topic: string
 }
 
 export type UISchemaLookupProvider = (elementId: string, params: ComboBoxDataProviderParams<any>, callback: ComboBoxDataProviderCallback<TItem>) => void;
 
+export type UIInputData = Dictionary<T>
 
 // export declare interface UISchemaUIElements {
 //     [key: string]: UISchemaUIElement

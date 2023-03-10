@@ -14,13 +14,17 @@ ui_schema = {
         ],
         "modified": [
             "datatype(datetime)"
+        ],
+        "created": [
+            "datatype(datetime)"
         ]
+
     },
     "layout_settings": {
         "orchestration_strategy": "stack",
     },
     "ui_elements": {
-        "0": {
+        "e0": {
             "element_type": {
                 "name": "layout",
                 "layout": {
@@ -35,7 +39,7 @@ ui_schema = {
                     "orchestration_strategy": "columns",
                 },
                 "ui_elements": {
-                    "1": {
+                    "e1": {
                         "binding": {
                             "field_name": "context_id"
                         },
@@ -45,13 +49,14 @@ ui_schema = {
                         "element_type": {
                             "name": "Selection",
                             "text": "context-id",
+                            "value": "${e1}",
                             "is_identifier": true,
                             "items": {
                                 "topic": "my topic"
                             }
                         }
                     },
-                    "2": {
+                    "e2": {
                         "binding": {
                             "field_name": "text_filter"
                         },
@@ -60,10 +65,11 @@ ui_schema = {
                         },
                         "element_type": {
                             "name": "TextField",
+                            "value": "${e2}",
                             "text": "text_filter"
                         }
                     },
-                    "3": {
+                    "e3": {
                         "binding": {
                             "field_name": "modified"
                         },
@@ -72,31 +78,43 @@ ui_schema = {
                         },
                         "element_type": {
                             "name": "DateField",
-                            "text": "date field"
+                            "text": "date field",
+                            "value": "${e3}"
                         },
                     },
-                    "4": {
+                    "e4": {
                         "binding": {
-                            "field_name": "modified"
+                            "field_name": "created"
                         },
                         "layout": {
                             "min_width": 2
                         },
                         "element_type": {
                             "name": "DateTimeField",
-                            "text": "date time field"
+                            "text": "date time field",
+                            "value": "${e4}"
                         },
                     },
+                    "e5template": {
+                        "layout": {
+                            "min_width": 2
+                        },
+                        "element_type": {
+                            "name": "TemplateLabel",
+                            "value": "${e5TemplateLabel}",
+                            "style": "light-background"
+                        }
+                    }
                 }
             }
         },
-        "1": {
+        "e5": {
             "element_type": {
                 "name": "line",
                 "padding": 0
             }
         },
-        "4": {
+        "e6": {
             "element_type": {
                 "name": "layout",
                 "layout": {
@@ -106,13 +124,13 @@ ui_schema = {
                     "orchestration_strategy": "RightAlign",
                 },
                 "ui_elements": {
-                    "5": {
+                    "e7": {
                         "element_type": {
                             "name": "Button",
                             "type": "cancelButton"
                         }
                     },
-                    "6": {
+                    "e8": {
                         "element_type": {
                             "name": "Button",
                             "type": "okButton"
