@@ -1,13 +1,14 @@
 {
-  "name": "uiwebcomponent",
+  "name": "uicomponent",
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "main": "dist/ui-component.es.js",
+  "main": "dist/uicomponent.js",
+  "module": "dist/uicomponent.js",
   "exports": {
-    ".": "./dist/ui-component.es.js"
+    "import": "./dist/uicomponent.js"
   },
-  "types": "types/ui-component.d.ts",
+  "types": "src/uischema.d.ts",
   "files": [
     "dist",
     "types"
