@@ -3,14 +3,15 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "main": "dist/uicomponent.js",
-  "module": "dist/uicomponent.js",
+  "main": "src/ui-component.ts",
+  "module": "src/ui-component.ts",
   "exports": {
-    "import": "./dist/uicomponent.js"
+    "import": "./src/ui-component.ts"
   },
   "types": "src/uischema.d.ts",
   "files": [
     "dist",
+    "src",
     "types"
   ],
   "scripts": {
