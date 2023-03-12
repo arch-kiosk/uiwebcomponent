@@ -16,7 +16,13 @@ import {
     UISchemaLayoutElement,
     UILayout,
     UISchemaLayoutSettings,
-    UISchemaLayoutPadding, UISchemaButton, UISchemaComboBox, UISchemaLookupProvider, Dictionary, UISchemaUIElementWithId
+    UISchemaLayoutPadding,
+    UISchemaButton,
+    UISchemaComboBox,
+    UISchemaLookupProvider,
+    Dictionary,
+    UISchemaUIElementWithId,
+    UISchemaTemplateLabel
 } from "./uischema";
 import {UIStackLayoutClass,UIColumnLayoutClass,UILayoutClass,UIRightAlignLayoutClass} from "./layoutclasses"
 
@@ -115,7 +121,7 @@ export class UIComponent extends LitElement {
         const result: {[key: string]: any} = {}
         if (!this._dsd_to_element_list || Object.keys(this._dsd_to_element_list).length === 0) return {}
         Object.entries(this._dsd_to_element_list).map(([dsd_field, element_entry]) => {
-            result[dsd_field] = this.get_field_value(element_entry.id, element_entry.element)
+            result[dsd_field] = this.get_field_value(element_entry.id)
         })
         return result
     }
