@@ -51,9 +51,7 @@ ui_schema = {
                             "text": "context-id",
                             "value": "${e1}",
                             "is_identifier": true,
-                            "items": {
-                                "topic": "my topic"
-                            }
+                            "items": [["ac", "Architecture"],["dp", "Deposit"],["bu", "Burial"]]
                         }
                     },
                     "e2": {

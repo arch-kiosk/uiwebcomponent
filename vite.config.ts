@@ -26,11 +26,12 @@ export default defineConfig(({ command, mode }) => {
       external: /^lit/,
     },
     server: {
+      port: 5174,
       fs: {
         strict: true,
         host: true,
         // allow: [searchForWorkspaceRoot(process.cwd()), "../../../static/scripts/kioskapplib"],
       },
     },
-    publicDir: "/public",
+    // publicDir: "/public",
 }})

@@ -61,7 +61,7 @@ export class UIComponent extends LitElement {
 
 
         for (const comboBox of this.renderRoot.querySelectorAll('vaadin-combo-box')) {
-            if (comboBox && this.lookupProvider) {
+            if (comboBox && !comboBox.items && this.lookupProvider) {
                 let lookupProvider = this.lookupProvider
                 comboBox.dataProvider = async (params, callback) => {
                     lookupProvider(comboBox.id, params, callback)
@@ -121,14 +121,35 @@ export class UIComponent extends LitElement {
         const result: {[key: string]: any} = {}
         if (!this._dsd_to_element_list || Object.keys(this._dsd_to_element_list).length === 0) return {}
         Object.entries(this._dsd_to_element_list).map(([dsd_field, element_entry]) => {
-            result[dsd_field] = this.get_field_value(element_entry.id)
+            result[dsd_field] = this.get_field_value(element_entry.id, element_entry.element)
         })
         return result
     }
 
-    get_field_value(id: string) {
+    get_field_value(id: string, element: UISchemaUIElement) {
         const domElement: HTMLFormElement | null = this.renderRoot.querySelector(`#${id}`)
-        return domElement?.value?domElement?.value:""
+        switch (element.element_type.name.toLowerCase()) {
+            case "selection":
+                return this.getSelectionValue(domElement, <UISchemaComboBox>element.element_type)
+            default: return domElement?.value?domElement?.value:""
+
+        }
+    }
+
+    getSelectionValue(domElement: HTMLFormElement|null, element: UISchemaComboBox) {
+        let value = domElement?.value?domElement?.value:""
+        if (value) {
+            if (Array.isArray(element.items)) {
+                for (const item of element.items) {
+                    const itemText = Array.isArray(item)?(item.length > 1?item[1]:item[0]):item
+                    const itemValue = Array.isArray(item)?item[0]:item
+                    if (value == itemText) {
+                        return itemValue
+                    }
+                }
+            }
+        }
+        return value
     }
 
     fieldChanged(e: Event) {
@@ -213,17 +234,30 @@ export class UIComponent extends LitElement {
 
     renderComboBox(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
         const element = <UISchemaComboBox>entry.element_type
-        const value = replaceData(entry.element_type.value, this.data)
         if (Array.isArray(element.items)) {
+            const items = []
+            let value = ""
+            for (const item of element.items) {
+                const itemText = Array.isArray(item)?(item.length > 1?item[1]:item[0]):item
+                const itemValue = Array.isArray(item)?item[0]:item
+                items.push(itemText)
+                if (this.data[id] == itemValue) {
+                    const data: Dictionary<string>= {}
+                    data[id] = itemText
+                    value = replaceData(entry.element_type.value, data)
+                }
+            }
+            console.log("items", items)
             return html`
             <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
                 <label for="${id}">${entry.element_type.text!}</label> 
-                <vaadin-combo-box id="${id}" name="${id}" .items="${element.items}"
+                <vaadin-combo-box id="${id}" name="${id}" .items="${items}"
                                   value="${value || nothing}"
                                   @change="${this.fieldChanged}"></vaadin-combo-box>
             </div>
-        `
+            `
         } else {
+            const value = replaceData(entry.element_type.value, this.data)
             if (element.items && 'topic' in element.items) {
                 return html`
                     <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
