@@ -9,6 +9,9 @@ ui_schema = {
         "context_id": [
             "datatype(varchar), identifier()"
         ],
+        "context_id_2": [
+            "datatype(varchar), identifier()"
+        ],
         "text_filter": [
             "datatype(varchar)"
         ],
@@ -39,7 +42,7 @@ ui_schema = {
                     "orchestration_strategy": "columns",
                 },
                 "ui_elements": {
-                    "e1": {
+                    "e0": {
                         "binding": {
                             "field_name": "context_id"
                         },
@@ -49,9 +52,30 @@ ui_schema = {
                         "element_type": {
                             "name": "Selection",
                             "text": "context-id",
-                            "value": "${e1}",
                             "is_identifier": true,
-                            "items": [["ac", "Architecture"],["dp", "Deposit"],["bu", "Burial"]]
+                            "items": {
+                                "topic": "locus",
+                                "selection": ['type'],
+                                "key": "type"
+                            }
+                        }
+                    },
+                    "e1": {
+                        "binding": {
+                            "field_name": "context_id_2"
+                        },
+                        "layout": {
+                            "min_width": "2",
+                        },
+                        "element_type": {
+                            "name": "Selection",
+                            "text": "context-id",
+                            "is_identifier": true,
+                            "items": {
+                                "topic": "locus",
+                                "selection": ['type'],
+                                "key": "type"
+                            }
                         }
                     },
                     "e2": {

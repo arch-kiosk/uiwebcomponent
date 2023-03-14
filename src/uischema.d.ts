@@ -82,7 +82,7 @@ export declare interface UISchemaButton extends UISchemaUIElementType {
 
 export declare interface UISchemaComboBox extends UISchemaUIElementType {
     name: "combobox"
-    items: Array<string> | UISchemaApiList
+    items: Array<string> | UISchemaLookupSettings
 }
 
 export declare interface UISchemaTemplateLabel extends UISchemaUIElementType {
@@ -90,11 +90,13 @@ export declare interface UISchemaTemplateLabel extends UISchemaUIElementType {
     style?: string
 }
 
-export declare interface UISchemaApiList {
+export declare interface UISchemaLookupSettings {
     topic: string
+    selection: [string]
+    key: string
 }
 
-export type UISchemaLookupProvider = (elementId: string, params: ComboBoxDataProviderParams<any>, callback: ComboBoxDataProviderCallback<TItem>) => void;
+export type UISchemaLookupProvider = (elementId: string, lookupSettings: UISchemaLookupSettings, params: ComboBoxDataProviderParams<any>, callback: ComboBoxDataProviderCallback<TItem>) => void;
 
 export type UIInputData = Dictionary<T>
 

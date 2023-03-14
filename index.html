@@ -16,20 +16,23 @@
     ui = document.getElementById("ui")
     // ui_schema = JSON.parse(json)
     console.log(ui_schema)
-    ui.data = {"e1": "bu",
+    ui.data = {"e0": ["0: 6", "6"],
+               "e1": ["0: 125", "125"],
                "e2": "my filter",
                "e3": "2012-02-28",
                "e4": "2012-02-28T00:15",
                "e5TemplateLabel": "This is my template label"
     }
     ui.uiSchema = ui_schema
-    ui.lookupProvider = (id, params, callback) => {
-      console.log(id, params)
-      let l = []
-      for (let i=1;i<=params.pageSize;i++) {
-        l.push(`${params.page}: ${i.toString()}`)
-      }
-      callback(l, 3500)
+    ui.lookupProvider = (id, lookupConfig, params, callback) => {
+      setTimeout(() => {
+        console.log(id, lookupConfig, params)
+        let l = []
+        for (let i = 1; i <= 250; i++) {
+          l.push([`${params.page}: ${i.toString()}`, params.page * params.pageSize + i])
+        }
+        callback(l, 250)
+      }, 1000)
     }
     ui.addEventListener("dataChanged", (event) => {
       console.log(event.detail.newData)

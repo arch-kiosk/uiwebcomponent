@@ -22,7 +22,7 @@ import {
     UISchemaLookupProvider,
     Dictionary,
     UISchemaUIElementWithId,
-    UISchemaTemplateLabel
+    UISchemaTemplateLabel, UISchemaLookupSettings
 } from "./uischema";
 import {UIStackLayoutClass,UIColumnLayoutClass,UILayoutClass,UIRightAlignLayoutClass} from "./layoutclasses"
 
@@ -31,6 +31,8 @@ export class UIComponent extends LitElement {
     static styles = unsafeCSS(local_css);
     _messages: { [key: string]: object } = {};
     _dsd_to_element_list: {[key: string]: UISchemaUIElementWithId} = {}
+    _element_list: {[key: string]: UISchemaUIElement} = {}
+    _selection_data: {[key: string]: {[key: string]: string}} = {}
 
     @property()
     uiSchema: UISchema | null = null
@@ -46,6 +48,7 @@ export class UIComponent extends LitElement {
 
     constructor() {
         super();
+        this._messages = {}
         // this.addEventListener('click', (e) => console.log(e), {capture: true});
     }
 
@@ -63,8 +66,40 @@ export class UIComponent extends LitElement {
         for (const comboBox of this.renderRoot.querySelectorAll('vaadin-combo-box')) {
             if (comboBox && !comboBox.items && this.lookupProvider) {
                 let lookupProvider = this.lookupProvider
+                let element = this.getSchemaElement(comboBox.id)
+                if (element.element_type.name.toLowerCase() !== "selection")
+                    continue
+                const selectionElement = (<UISchemaComboBox>element.element_type)
+                if (Array.isArray(selectionElement.items))
+                    continue
+
+                // comboBox.addEventListener("focus", () => {
+                //     this._selection_data = {}
+                // })
+                // comboBox.addEventListener("blur", () => {
+                //     this._selection_data = {}
+                // })
                 comboBox.dataProvider = async (params, callback) => {
-                    lookupProvider(comboBox.id, params, callback)
+                    if (!(comboBox.id in this._selection_data)) {
+                        lookupProvider(comboBox.id,
+                            <UISchemaLookupSettings>selectionElement.items,
+                            params,
+                            (items, size?: number) => {
+                                //this is a finite list: The callback gets all items at once.
+                                const valuesOnly = []
+                                this._selection_data[comboBox.id] = {}
+
+                                for (const item of items) {
+                                    this._selection_data[comboBox.id][item[0]] = item[1]
+                                    valuesOnly.push(item[0])
+                                }
+                                callback(valuesOnly, size)
+                            })
+                    } else {
+                        const values = Object.entries(this._selection_data[comboBox.id]).map(x => x[0]).filter(v => v.startsWith(params.filter))
+                        callback(values, values.length)
+                    }
+
                 }
             }
         }
@@ -72,6 +107,10 @@ export class UIComponent extends LitElement {
 
     updated(_changedProperties: any) {
         super.updated(_changedProperties);
+    }
+
+    getSchemaElement(id: string) {
+        return this._element_list[id]
     }
 
     processSchemaDefinition() {
@@ -99,6 +138,7 @@ export class UIComponent extends LitElement {
                             dsd_to_element_list[dsd_field] = {"id": id, "element": entry}
                         }
                     }
+                    element_list[id] = entry
                     if (entry.element_type.name === "layout") {
                         _add_elements((<UISchemaLayoutElement>entry.element_type).ui_elements)
                     }
@@ -110,6 +150,7 @@ export class UIComponent extends LitElement {
         const id_list: Array<string> = []
         let showError = ""
         const dsd_to_element_list = this._dsd_to_element_list
+        const element_list = this._element_list
         if (this.uiSchema) {
             _add_elements(this.uiSchema.ui_elements)
         }
@@ -130,31 +171,42 @@ export class UIComponent extends LitElement {
         const domElement: HTMLFormElement | null = this.renderRoot.querySelector(`#${id}`)
         switch (element.element_type.name.toLowerCase()) {
             case "selection":
-                return this.getSelectionValue(domElement, <UISchemaComboBox>element.element_type)
+                return this.getSelectionValue(id, domElement)
             default: return domElement?.value?domElement?.value:""
 
         }
     }
 
-    getSelectionValue(domElement: HTMLFormElement|null, element: UISchemaComboBox) {
-        let value = domElement?.value?domElement?.value:""
-        if (value) {
-            if (Array.isArray(element.items)) {
-                for (const item of element.items) {
-                    const itemText = Array.isArray(item)?(item.length > 1?item[1]:item[0]):item
-                    const itemValue = Array.isArray(item)?item[0]:item
-                    if (value == itemText) {
-                        return itemValue
-                    }
+    getSelectionValue(id:string, domElement: HTMLFormElement|null) {
+        let displayValue = domElement?.value?domElement?.value:""
+        let dataValue = domElement?.getAttribute("data-value")
+        if (displayValue) {
+            if (id in this._selection_data) {
+                try{
+                    dataValue = this._selection_data[id][displayValue]
+                } catch {
                 }
             }
         }
-        return value
+        return dataValue?dataValue:""
     }
+
+    // selectionChanged(htmlElement: HTMLInputElement) {
+    //     const selectedValue = htmlElement.value
+    //     try {
+    //         const dataValue = this._selection_data[selectedValue]
+    //         htmlElement.setAttribute("data-value", dataValue)
+    //         htmlElement.setAttribute("value", selectedValue)
+    //     } catch {}
+    // }
 
     fieldChanged(e: Event) {
         if ("currentTarget" in e) {
             const id = (<HTMLElement>e.currentTarget).id
+            // const element = this.getSchemaElement(id)
+            // if (element.element_type.name.toLowerCase() == "selection") {
+            //     this.selectionChanged(<HTMLInputElement>e.currentTarget)
+            // }
             const options = {
                 detail: {
                     "srcElement": id,
@@ -252,18 +304,29 @@ export class UIComponent extends LitElement {
             <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
                 <label for="${id}">${entry.element_type.text!}</label> 
                 <vaadin-combo-box id="${id}" name="${id}" .items="${items}"
-                                  value="${value || nothing}"
+                                  .selectedItem="${value || nothing}"
                                   @change="${this.fieldChanged}"></vaadin-combo-box>
             </div>
             `
         } else {
-            const value = replaceData(entry.element_type.value, this.data)
             if (element.items && 'topic' in element.items) {
+                // if the combobox is dynamic the value in the data MUST be a tuple with
+                // [display-value:value]
+                let displayValue = ""
+                let value = ""
+                const elementData = id in this.data?this.data[id]:""
+                if (Array.isArray(elementData) && elementData.length == 2) {
+                    displayValue = elementData[0]
+                    value = elementData[1]
+                }
+
                 return html`
                     <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
                         <label for="${id}">${entry.element_type.text!}</label> 
                         <vaadin-combo-box id="${id}" name="${id}"
-                                          .selectedItem="${value || nothing}"
+                                          .selectedItem="${displayValue || nothing}"
+                                          value="${displayValue || nothing}"
+                                          data-value="${value}"
                                           @change="${this.fieldChanged}"></vaadin-combo-box>
                     </div>
                 `
