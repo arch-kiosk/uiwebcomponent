@@ -92,8 +92,8 @@ export class UIComponent extends LitElement {
 
                                 for (const item of items) {
 
-                                    this._selection_data[comboBox.id][item[0]] = item[1]
-                                    valuesOnly.push(item[0])
+                                    this._selection_data[comboBox.id][item[1]] = item[0]
+                                    valuesOnly.push(item[1])
                                 }
                                 callback(valuesOnly, size)
                             })
@@ -101,7 +101,6 @@ export class UIComponent extends LitElement {
                         const values = Object.entries(this._selection_data[comboBox.id]).map(x => x[0]).filter(v => v.startsWith(params.filter))
                         callback(values, values.length)
                     }
-
                 }
             }
         }

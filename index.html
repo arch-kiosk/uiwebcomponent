@@ -29,7 +29,7 @@
         console.log(id, lookupConfig, params)
         let l = []
         for (let i = 1; i <= 250; i++) {
-          l.push([`${params.page}: ${i.toString()}`, params.page * params.pageSize + i])
+          l.push([params.page * params.pageSize + i, `${params.page}: ${i.toString()}`])
         }
         callback(l, 250)
       }, 1000)
