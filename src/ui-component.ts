@@ -262,6 +262,8 @@ export class UIComponent extends LitElement {
         const button = <UISchemaButton>entry.element_type
         let buttonClass = "modal-button"
         let buttonText = ""
+        let extraStyle = button.extra_style?button.extra_style:nothing
+
         switch (button.type) {
             case "cancelButton":
                 buttonClass = "modal-cancel"
@@ -277,7 +279,7 @@ export class UIComponent extends LitElement {
                 break
         }
         return html`
-            <button class="${buttonClass}" id=${id} name=${id} @click="${this.fieldChanged}"">
+            <button class="${buttonClass}" style="${extraStyle}" id=${id} name=${id} @click="${this.fieldChanged}"">
                 ${buttonText} 
             </button>
         `

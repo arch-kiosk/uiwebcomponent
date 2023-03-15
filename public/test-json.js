@@ -162,7 +162,8 @@ ui_schema = {
                         "element_type": {
                             "name": "Button",
                             "type": "iconButton",
-                            "icon": ""
+                            "icon": "",
+                            "extra_style": "padding-left:5px"
                         }
                     }
                 }
