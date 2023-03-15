@@ -86,10 +86,12 @@ export class UIComponent extends LitElement {
                             params,
                             (items, size?: number) => {
                                 //this is a finite list: The callback gets all items at once.
+                                //item[1] is the display value, item[0] is the data value of the selection
                                 const valuesOnly = []
                                 this._selection_data[comboBox.id] = {}
 
                                 for (const item of items) {
+
                                     this._selection_data[comboBox.id][item[0]] = item[1]
                                     valuesOnly.push(item[0])
                                 }
@@ -190,15 +192,6 @@ export class UIComponent extends LitElement {
         }
         return dataValue?dataValue:""
     }
-
-    // selectionChanged(htmlElement: HTMLInputElement) {
-    //     const selectedValue = htmlElement.value
-    //     try {
-    //         const dataValue = this._selection_data[selectedValue]
-    //         htmlElement.setAttribute("data-value", dataValue)
-    //         htmlElement.setAttribute("value", selectedValue)
-    //     } catch {}
-    // }
 
     fieldChanged(e: Event) {
         if ("currentTarget" in e) {
