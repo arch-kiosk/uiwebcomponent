@@ -67,7 +67,7 @@ export declare interface UISchemaUIElementType {
     name: string
     text?: string
     value?: string
-    extra_style: string
+    extra_style?: string
     padding?: number | string | UISchemaLayoutPadding
 }
 
