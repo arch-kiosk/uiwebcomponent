@@ -157,6 +157,13 @@ ui_schema = {
                             "name": "Button",
                             "type": "okButton"
                         }
+                    },
+                    "e9": {
+                        "element_type": {
+                            "name": "Button",
+                            "type": "iconButton",
+                            "icon": ""
+                        }
                     }
                 }
             }

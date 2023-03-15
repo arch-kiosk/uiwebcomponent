@@ -62,9 +62,9 @@ small, .font-small
   font-size: $font-size-small
 
 button
-  width: 60px
-  height: 60px
-  border-radius: 35px
+  width: var(--ui-button-width, 60px)
+  height: var(--ui-button-height, 60px)
+  border-radius: calc(var(--ui-button-height, 60px) / 2)
   border-style: solid
   border-width: 2px
   background-color: $col-bg-btn
@@ -151,6 +151,5 @@ button:disabled
     border-color: $col-bg-alert
     background-color: $col-bg-alert-darker
     color: $col-primary-bg-alert
-
 
 

@@ -261,17 +261,24 @@ export class UIComponent extends LitElement {
     renderButton(id: string, entry: UISchemaUIElement) {
         const button = <UISchemaButton>entry.element_type
         let buttonClass = "modal-button"
-
+        let buttonText = ""
         switch (button.type) {
-            case "cancelButton": buttonClass = "modal-cancel"
-                                 break
-            case "okButton": buttonClass = "modal-ok"
-                                break
-            default: break
+            case "cancelButton":
+                buttonClass = "modal-cancel"
+                break
+            case "okButton":
+                buttonClass = "modal-ok"
+                break
+            case "iconButton":
+                buttonClass = "modal-round-button"
+                buttonText = button.icon!
+                break
+            default:
+                break
         }
         return html`
             <button class="${buttonClass}" id=${id} name=${id} @click="${this.fieldChanged}"">
-                ${entry.element_type.text!} 
+                ${buttonText} 
             </button>
         `
     }

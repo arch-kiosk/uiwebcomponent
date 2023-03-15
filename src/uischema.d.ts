@@ -78,6 +78,7 @@ export declare interface UISchemaLayoutElement extends UISchemaUIElementType, UI
 export declare interface UISchemaButton extends UISchemaUIElementType {
     name: "button"
     type?: "okButton" | "cancelButton" | "iconButton"
+    icon?: string
 }
 
 export declare interface UISchemaComboBox extends UISchemaUIElementType {
