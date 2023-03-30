@@ -12,6 +12,14 @@ export declare class UIComponent extends LitElement {
     _dsd_to_element_list: {
         [key: string]: UISchemaUIElementWithId;
     };
+    _element_list: {
+        [key: string]: UISchemaUIElement;
+    };
+    _selection_data: {
+        [key: string]: {
+            [key: string]: string;
+        };
+    };
     uiSchema: UISchema | null;
     data: UIInputData;
     lookupProvider: UISchemaLookupProvider | null;
@@ -20,11 +28,13 @@ export declare class UIComponent extends LitElement {
     protected willUpdate(_changedProperties: PropertyValues): void;
     firstUpdated(_changedProperties: any): void;
     updated(_changedProperties: any): void;
+    getSchemaElement(id: string): UISchemaUIElement;
     processSchemaDefinition(): void;
     gatherData(): {
         [key: string]: any;
     };
-    get_field_value(id: string): any;
+    get_field_value(id: string, element: UISchemaUIElement): any;
+    getSelectionValue(id: string, domElement: HTMLFormElement | null): string;
     fieldChanged(e: Event): void;
     getLayoutClass(layoutSettings?: UISchemaLayoutSettings): UILayoutClass | null;
     renderTextField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;

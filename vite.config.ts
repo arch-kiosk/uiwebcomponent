@@ -2,17 +2,22 @@
 
 import { defineConfig } from 'vite'
 import {resolve} from 'path'
+import dts from 'vite-plugin-dts'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
   // const env = loadEnv(mode, "env");
   return {
     build: {
+      copyPublicDir: false,
       lib: {
         entry: resolve(__dirname, 'src/ui-component.ts'),
         name: 'UIComponent',
         filename: 'uicomponent',
         formats: ['es'],
+      },
+      rollupOptions: {
+        external: [/^lit/,"@polymer/polymer",/^polymer/,/^@polymer/,/^@vaadin/]
       },
     },
     esbuild:
@@ -22,9 +27,6 @@ export default defineConfig(({ command, mode }) => {
               drop: ["console", "debugger"],
             }
             : {},
-    rollupOptions: {
-      external: /^lit/,
-    },
     server: {
       port: 5174,
       fs: {
@@ -33,5 +35,6 @@ export default defineConfig(({ command, mode }) => {
         // allow: [searchForWorkspaceRoot(process.cwd()), "../../../static/scripts/kioskapplib"],
       },
     },
+    plugins: [dts()]
     // publicDir: "/public",
 }})
