@@ -28,7 +28,6 @@ export class UIColumnLayoutClass extends UILayoutClass {
 export class UIStackLayoutClass extends UILayoutClass {
     cssClass = "ui-stack-layout"
     renderLayoutStyles(layout?: UISchemaUIElementLayoutSettings): string {
-        console.log("StackLayouter", layout)
         const min_width = layout?.min_width
         let style = ""
         if (min_width) {
@@ -38,7 +37,6 @@ export class UIStackLayoutClass extends UILayoutClass {
                 style = `width: ${min_width * 100}px`
             }
         }
-        console.log("style", style)
         return style
     }
 }

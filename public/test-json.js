@@ -27,7 +27,7 @@ ui_schema = {
         "orchestration_strategy": "stack",
     },
     "ui_elements": {
-        "e0": {
+        "l0": {
             "element_type": {
                 "name": "layout",
                 "layout": {
