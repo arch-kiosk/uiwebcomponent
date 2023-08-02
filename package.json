@@ -14,7 +14,8 @@
   "files": ["./dist"],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "rollout": "npm pack --pack-destination .\\npm"
   },
   "dependencies": {
     "@vaadin/combo-box": "^24.0.0",

@@ -355,7 +355,7 @@ export class UIComponent extends LitElement {
         return html`
             <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
                 ${entry.element_type.text?html`<label for="${id}">${entry.element_type.text!}</label>`:nothing} 
-                <div class="${htmlClass}" id=${id}>
+                <div class="${htmlClass}" id=${id} style="${this.getPaddingStyle(entry.layout?.padding).replace("padding", "margin")}">
                     ${value || nothing}
                 </div>
             </div>
@@ -394,7 +394,7 @@ export class UIComponent extends LitElement {
         } else if (typeof padding === "string") {
             style = `padding: ${padding}`
         } else if (padding) {
-            console.log(typeof padding)
+            console.log(padding)
             style = `padding: ${(<UISchemaLayoutPadding>padding).top} ${(<UISchemaLayoutPadding>padding).right} ${(<UISchemaLayoutPadding>padding).bottom} ${(<UISchemaLayoutPadding>padding).left}`
         }
         return style

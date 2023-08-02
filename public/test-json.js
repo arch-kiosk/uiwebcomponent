@@ -119,7 +119,13 @@ ui_schema = {
                     },
                     "e5template": {
                         "layout": {
-                            "min_width": 2
+                            "min_width": 2,
+                            "padding": {
+                                "top": "1em",
+                                "bottom": "0",
+                                "left": "0",
+                                "right": "0",
+                            }
                         },
                         "element_type": {
                             "name": "TemplateLabel",
