@@ -8,6 +8,7 @@ import {UISchemaLine} from "../uischema";
 export class UIElementLine extends UIElement {
 
     // line needs a different way of dealing with the defaultElementVisibility
+    // @ts-ignore
     static isVisible(context: UIElementRenderContext, value: any) {
         let visible = <any> context.entry.element_type.visible
         if (visible === undefined) visible = context.layouter.defaultElementVisibility
