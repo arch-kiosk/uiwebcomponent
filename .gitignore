@@ -31,3 +31,4 @@ dist-ssr
 /src/**/*.css.map
 /public/**/*.css
 /public/**/*.css.map
+*.mjs
