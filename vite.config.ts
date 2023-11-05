@@ -3,6 +3,7 @@
 import { defineConfig } from 'vite'
 import {resolve} from 'path'
 import dts from 'vite-plugin-dts'
+import packageJson from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -10,6 +11,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     build: {
       copyPublicDir: false,
+
       lib: {
         entry: resolve(__dirname, 'src/ui-component.ts'),
         name: 'UIComponent',
@@ -35,6 +37,9 @@ export default defineConfig(({ command, mode }) => {
         // allow: [searchForWorkspaceRoot(process.cwd()), "../../../static/scripts/kioskapplib"],
       },
     },
-    plugins: [dts()]
+    plugins: [dts()],
+    define: {
+      'import.meta.env.PACKAGE_VERSION': JSON.stringify(packageJson.version)
+    }
     // publicDir: "/public",
 }})

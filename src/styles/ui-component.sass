@@ -1,21 +1,61 @@
 @import constants
 @import basics
 
+*
+  box-sizing: border-box
+
 \:host
   --lumo-contrast-10pct: rgba(0,0,0,0)
   --lumo-contrast-60pct: var(--col-accent-bg-1)
   --lumo-text-field-size: 1em
   --lumo-font-size: var(--font-size-standard)
   --lumo-font-family: var(--standard-text-font)
+  width: 100%
 
-input
+.developer-info
+  background-color: darkgreen
+  color: lightyellow
+  //margin-left: 1em
+  font-size: .7em
+  display: inline-block
+  //height: 0px
+  //width: 0px
+  //overflow: hidden
+  word-wrap: anywhere
+.uicomponent-version
+  position: absolute
+  transform: translateX(-40px)
+  background-color: rgba(0,150,0,.4)
+  color: white
+  font-family: $standard-text
+  padding: .2em .5em
+  left: auto
+  right: 0px
+  z-index: 10
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px
+i
+  font-family: $fontawesome-font-family
+  font-style: normal
+  font-variant: normal
+  text-rendering: auto
+  -webkit-font-smoothing: antialiased
+  font-weight: 900
+  font-size: .9em
+
+input,textarea
    font-size: $font-size-standard
+   width: 100%
+.input-right-align
+  text-align: right
 .ui-layout
   background-color: $col-bg-1
 .ui-column-layout
   @extend .ui-layout
   display: grid
-  grid-template-columns: repeat(auto-fill, 200px)
+  grid-template-columns: repeat(auto-fill, minmax(200px, max-content))
+  align-items: end
+  grid-row-gap: 1em
+
 .ui-stack-layout
   @extend .ui-layout
   display: flex
@@ -25,12 +65,20 @@ input
   display: flex
   flex-direction: row
   justify-content: end
+.ui-table-layout
+  @extend .ui-layout
 .ui-line
   width: 100%
   height: 1px
   margin-top: 1em
   margin-bottom: 1em
   border-top: solid 1px $col-accent-bg-1
+.ui-line-transparent
+  height: 0px
+  opacity: 0
+  margin: 0
+  border: none
+
 .element-wrapper
   padding: 5px
   //grid-column-start: 1
@@ -45,12 +93,95 @@ input
   background-color: $col-bg-1-lighter
 
 .text-field-div
-  display: flex
+  margin-left: .5em
+  margin-right: .5em
+
+.identifier-link
+  //border-bottom: 2px black dashed
+  text-decoration: underline
+  text-decoration-style: dotted
+  cursor: pointer
+
+.footsteps
+  transform: rotate(270deg)
+  display: inline-block
+  margin-right: .5em
+
+.ui-field
   font-family: $standard-text
   font-size: $font-size-standard
+  color: $col-primary-bg-1
+  input:disabled, textarea:disabled
+    background-color: $col-bg-1-lighter
+    color: $col-primary-bg-1
+.text-cell
+  @extend .ui-field
+  display: table-cell
+  background-color: $col-bg-1-lighter
+table
+  display: table
+  table-layout: fixed
+  border-collapse: collapse
+  overflow-y: inherit
+  width: 100%
+
+.table-header
+  @extend .ui-field
+  display: table-cell
+  text-align: left
+  background-color: $col-bg-1-darker
+  color: $col-accent-bg-1
+  padding: $input-padding
+  font-family: $monospace
+  //font-size: .9em
+  font-weight: normal
+  flex-direction: row
+th
+  position: sticky
+  top: 0
+
+.table-header-icon
+  text-align: center
+  background-color: $col-bg-1-lighter
+  color: $col-accent-bg-1
+  padding: 2px 4px
+.table-header-icon-secondary
+  @extend .table-header-icon
+  background-color: $col-bg-1-darker
+  color: $col-primary-bg-1
+  opacity: .5
+td
+  border: 1px solid $col-bg-1-darker
+  input, textarea
+    width: 100%
+.text-field-div, .read-only-textarea
+  @extend .ui-field
+  display: flex
   flex-direction: column
-  margin-left: .5em
-  margin-bottom: .5em
+  //margin-bottom: .5em
+  textarea
+    min-height: 5em
+.read-only-textarea
+  background-color: $col-bg-1-lighter
+  color: $col-primary-bg-1
+  min-height: 30px
+  //max-height: 5em
+  overflow-y: auto
+  padding: $input-padding
+.read-only-image
+  @extend .read-only-textarea
+  display: flex
+  //width: 100%
+.image-center
+  margin: auto //this is what centers a read-only-image within its parent.
+  overflow: auto
+.image-left-align
+  margin: 0 //this is what centers a read-only-image within its parent.
+  overflow: auto
+.file-element-description
+  text-align: center
+  white-space: pre-wrap
+
 .combobox-div
   @extend .text-field-div
   margin-bottom: 0em
@@ -65,5 +196,25 @@ vaadin-date-picker > input, vaadin-time-picker > input, vaadin-combo-box > input
   --lumo-text-field-size: 22px
   background-color: white
   max-height: 30px
+vaadin-date-picker > input:disabled, vaadin-time-picker > input:disabled, vaadin-combo-box > input:disabled
+  background-color: $col-bg-1-lighter
+  --lumo-disabled-text-color: $col-primary-bg-1
 
+
+.ui-gallery-layout
+  display: grid
+  width: 100%
+  height: 100%
+  background-color: $col-bg-body
+  grid-template-columns: repeat(auto-fill, minmax(200px, max-content))
+.gallery-item
+  display: flex
+  flex-direction: column
+  box-shadow: 3px 3px 6px rgb(200, 200, 200)
+  box-sizing: content-box
+  border-radius: 10px
+  margin-right: 12px
+  margin-bottom: 20px
+  .read-only-image
+    background: none
 

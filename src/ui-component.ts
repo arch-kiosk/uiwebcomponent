@@ -1,30 +1,43 @@
-import {unsafeCSS, LitElement, TemplateResult, PropertyValues, nothing} from "lit";
+import {unsafeCSS, LitElement, TemplateResult, PropertyValues} from "lit";
 import { html } from 'lit/static-html.js'
 import { customElement, property, state } from "lit/decorators.js";
 import '@vaadin/date-picker'
 import '@vaadin/date-time-picker'
 import '@vaadin/combo-box'
+import './fileview'
 
 // import local_css from "/src/static/logviewerapp.sass?inline";
 // @ts-ignore
 import local_css from "./styles/ui-component.sass?inline";
-import {replaceData} from "./tools"
+import {UIElementFactory} from "./uielementfactory";
+
 import {
     UISchema,
     UIInputData,
     UISchemaUIElement,
     UISchemaLayoutElement,
-    UILayout,
     UISchemaLayoutSettings,
     UISchemaLayoutPadding,
-    UISchemaButton,
     UISchemaComboBox,
     UISchemaLookupProvider,
     Dictionary,
     UISchemaUIElementWithId,
-    UISchemaTemplateLabel, UISchemaLookupSettings
+    UISchemaLookupSettings,
+    UIComponentDataProvider,
+    UIComponentMoveToNextRowProvider,
+    UIComponentSetSortOrderProvider,
+    UIComponentFetchFileProvider, UIComponentFileFetchParams
+
 } from "./uischema";
-import {UIStackLayoutClass,UIColumnLayoutClass,UILayoutClass,UIRightAlignLayoutClass} from "./layoutclasses"
+import {
+    UIStackLayoutClass,
+    UIColumnLayoutClass,
+    UILayoutClass,
+    UIRightAlignLayoutClass,
+    UITableLayoutClass, UIGalleryLayoutClass
+} from "./layoutclasses"
+import {UIElementRenderContext, UILayoutRenderContext} from "./uielementrendercontext";
+import {UIDefaultElementFactory} from "./uidefaultelementfactory";
 
 @customElement("ui-component")
 export class UIComponent extends LitElement {
@@ -35,13 +48,34 @@ export class UIComponent extends LitElement {
     _selection_data: {[key: string]: {[key: string]: string}} = {}
 
     @property()
+    uiElementFactory: UIElementFactory | null = new UIDefaultElementFactory()
+
+    @property()
     uiSchema: UISchema | null = null
+
+    @property()
+    linkIdentifiers: boolean = true
+
+    @property()
+    showDevelopmentInfo: boolean = false
 
     @property()
     data: UIInputData = {}
 
     @property()
     lookupProvider: UISchemaLookupProvider | null = null
+
+    @property()
+    dataProvider: UIComponentDataProvider | null = null
+
+    @property()
+    moveToNextRow: UIComponentMoveToNextRowProvider | null = null
+
+    @property()
+    setSortOrder: UIComponentSetSortOrderProvider | null = null
+
+    @property()
+    fetchFileProvider: UIComponentFetchFileProvider | null = null
 
     @state()
     _showError: string | null = null
@@ -62,7 +96,6 @@ export class UIComponent extends LitElement {
     firstUpdated(_changedProperties: any) {
         super.firstUpdated(_changedProperties);
 
-
         for (const comboBox of this.renderRoot.querySelectorAll('vaadin-combo-box')) {
             if (comboBox && !comboBox.items && this.lookupProvider) {
                 let lookupProvider = this.lookupProvider
@@ -70,15 +103,12 @@ export class UIComponent extends LitElement {
                 if (element.element_type.name.toLowerCase() !== "selection")
                     continue
                 const selectionElement = (<UISchemaComboBox>element.element_type)
+
+                // if this is a selection with a static list, no dataProvider is necessary
                 if (Array.isArray(selectionElement.items))
                     continue
 
-                // comboBox.addEventListener("focus", () => {
-                //     this._selection_data = {}
-                // })
-                // comboBox.addEventListener("blur", () => {
-                //     this._selection_data = {}
-                // })
+                //Todo: This should be in the uielementcombobox.ts
                 comboBox.dataProvider = async (params, callback) => {
                     if (!(comboBox.id in this._selection_data)) {
                         lookupProvider(comboBox.id,
@@ -135,10 +165,13 @@ export class UIComponent extends LitElement {
                         if (dsd_field in dsd_to_element_list) {
                             console.log(`dsd field ${dsd_field} bound again in element ${id} in UI schema`)
                             showError = `There is an error in the schema definition: dsd field "${dsd_field}" bound again in element "${id}" in UI schema`
+                            entry.element_type.enabled = false
                         } else {
                             dsd_to_element_list[dsd_field] = {"id": id, "element": entry}
                         }
                     }
+                    if (entry.element_type.enabled === undefined)
+                        entry.element_type.enabled = true
                     element_list[id] = entry
                     if (entry.element_type.name === "layout") {
                         _add_elements((<UISchemaLayoutElement>entry.element_type).ui_elements)
@@ -159,6 +192,7 @@ export class UIComponent extends LitElement {
         console.log(this._dsd_to_element_list)
     }
 
+
     gatherData() {
         const result: {[key: string]: any} = {}
         if (!this._dsd_to_element_list || Object.keys(this._dsd_to_element_list).length === 0) return {}
@@ -168,24 +202,48 @@ export class UIComponent extends LitElement {
         return result
     }
 
+    public fetchFile(event: CustomEvent) {
+        const params = event.detail as UIComponentFileFetchParams
+        if (this.fetchFileProvider) {
+            this.fetchFileProvider(params)
+        }
+    }
+
+
     get_field_value(id: string, element: UISchemaUIElement) {
         const domElement: HTMLFormElement | null = this.renderRoot.querySelector(`#${id}`)
         switch (element.element_type.name.toLowerCase()) {
             case "selection":
-                return this.getSelectionValue(id, domElement)
+                return this.getSelectionValue(id, domElement, element.element_type as UISchemaComboBox)
             default: return domElement?.value?domElement?.value:""
 
         }
     }
 
-    getSelectionValue(id:string, domElement: HTMLFormElement|null) {
+    //Todo: This should be in the uielementcombobox.ts
+    getSelectionValue(id:string, domElement: HTMLFormElement|null, comboBox: UISchemaComboBox) {
         let displayValue = domElement?.value?domElement?.value:""
-        let dataValue = domElement?.getAttribute("data-value")
-        if (displayValue) {
-            if (id in this._selection_data) {
-                try{
-                    dataValue = this._selection_data[id][displayValue]
-                } catch {
+        let dataValue: any
+        this._element_list[id].element_type
+        if (Array.isArray(comboBox.items) && comboBox.items.length > 0) {
+            if (Array.isArray(comboBox.items[0])) {
+                for (const item of comboBox.items) {
+                    if (item[1] === displayValue) {
+                        dataValue = item[0]
+                        break;
+                    }
+                }
+            } else {
+                dataValue = displayValue
+            }
+        } else {
+            dataValue = domElement?.getAttribute("data-value")
+            if (displayValue) {
+                if (id in this._selection_data) {
+                    try{
+                        dataValue = this._selection_data[id][displayValue]
+                    } catch {
+                    }
                 }
             }
         }
@@ -210,180 +268,65 @@ export class UIComponent extends LitElement {
         }
     }
 
-    getLayoutClass(layoutSettings?: UISchemaLayoutSettings): UILayoutClass | null {
+    getLayoutClass(layoutElementId: string, layoutSettings?: UISchemaLayoutSettings, inheritReadOnly = false): UILayoutClass {
+        const layoutType = layoutSettings?.type || "sheet"
+        if (inheritReadOnly)
+            if (layoutSettings && inheritReadOnly)
+                layoutSettings.readonly = inheritReadOnly
         if (layoutSettings?.orchestration_strategy) {
-            switch (layoutSettings?.orchestration_strategy.toLowerCase()) {
-                case "columns": return new UIColumnLayoutClass(layoutSettings)
-                case "rightalign": return new UIRightAlignLayoutClass(layoutSettings)
-                case "stack": return new UIStackLayoutClass(layoutSettings)
-                default: return null
+            if (layoutType === "sheet") {
+                switch (layoutSettings?.orchestration_strategy.toLowerCase()) {
+                    case "columns":
+                        return new UIColumnLayoutClass(layoutElementId, layoutSettings)
+                    case "rightalign":
+                        return new UIRightAlignLayoutClass(layoutElementId, layoutSettings)
+                    case "stack":
+                        return new UIStackLayoutClass(layoutElementId, layoutSettings)
+                    default:
+                        throw `Unknown orchestration strategy ${layoutSettings.orchestration_strategy}`
+                }
+            } else if (layoutType === "list") {
+                switch (layoutSettings?.orchestration_strategy.toLowerCase()) {
+                    case "columns":
+                        return new UIColumnLayoutClass(layoutElementId, layoutSettings)
+                    case "table":
+                        return new UITableLayoutClass(layoutElementId, layoutSettings)
+                    case "gallery":
+                        return new UIGalleryLayoutClass(layoutElementId, layoutSettings)
+                    default:
+                        throw `Unknown orchestration strategy ${layoutSettings.orchestration_strategy}`
+                }
+            } else {
+                throw `Unknown layout type ${layoutType}`
             }
         } else
-            return new UIColumnLayoutClass(layoutSettings)
+            return new UIColumnLayoutClass(layoutElementId, layoutSettings)
     }
 
-    renderTextField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
-        const value = replaceData(entry.element_type.value, this.data)
-        return html`
-            <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
-                <label for="${id}">${entry.element_type.text!}</label> 
-                <input id=${id} name=${id} type="text" 
-                       value="${value || nothing}"
-                       @change="${this.fieldChanged}"/>
-            </div>
-        `
-    }
-
-    renderDateField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
-        const value = replaceData(entry.element_type.value, this.data)
-        return html`
-            <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
-                <label for="${id}">${entry.element_type.text!}</label> 
-                <vaadin-date-picker id=${id} name=${id}
-                                    value="${value || nothing}"
-                                    @change="${this.fieldChanged}"></vaadin-date-picker>
-            </div>
-        `
-    }
-
-    renderDateTimeField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
-        const value = replaceData(entry.element_type.value, this.data)
-        return html`
-            <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
-                <label for="${id}">${entry.element_type.text!}</label> 
-                <vaadin-date-time-picker id=${id} name=${id}
-                                         value="${value || nothing}"
-                                         @change="${this.fieldChanged}"></vaadin-date-time-picker>
-            </div>
-        `
-    }
-
-    renderButton(id: string, entry: UISchemaUIElement) {
-        const button = <UISchemaButton>entry.element_type
-        let buttonClass = "modal-button"
-        let buttonText = ""
-        let extraStyle = button.extra_style?button.extra_style:nothing
-
-        switch (button.type) {
-            case "cancelButton":
-                buttonClass = "modal-cancel"
-                break
-            case "okButton":
-                buttonClass = "modal-ok"
-                break
-            case "iconButton":
-                buttonClass = "modal-round-button"
-                buttonText = button.icon!
-                break
-            default:
-                break
-        }
-        return html`
-            <button class="${buttonClass}" style="${extraStyle}" id=${id} name=${id} @click="${this.fieldChanged}"">
-                ${buttonText} 
-            </button>
-        `
-    }
-
-    renderComboBox(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
-        const element = <UISchemaComboBox>entry.element_type
-        if (Array.isArray(element.items)) {
-            const items = []
-            let value = ""
-            for (const item of element.items) {
-                const itemText = Array.isArray(item)?(item.length > 1?item[1]:item[0]):item
-                const itemValue = Array.isArray(item)?item[0]:item
-                items.push(itemText)
-                if (this.data[id] == itemValue) {
-                    const data: Dictionary<string>= {}
-                    data[id] = itemText
-                    value = replaceData(entry.element_type.value, data)
-                }
+    renderUIElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
+        try {
+            if (!this.uiElementFactory) {
+                throw `UIComponent.renderUIElement: no elementFactory to instantiate ${entry.element_type.name}`
             }
-            console.log("items", items)
-            return html`
-            <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
-                <label for="${id}">${entry.element_type.text!}</label> 
-                <vaadin-combo-box id="${id}" name="${id}" .items="${items}"
-                                  .selectedItem="${value || nothing}"
-                                  @change="${this.fieldChanged}"></vaadin-combo-box>
-            </div>
-            `
-        } else {
-            if (element.items && 'topic' in element.items) {
-                // if the combobox is dynamic the value in the data MUST be a tuple with
-                // [display-value:value]
-                let displayValue = ""
-                let value = ""
-                const elementData = id in this.data?this.data[id]:""
-                if (Array.isArray(elementData) && elementData.length == 2) {
-                    displayValue = elementData[0]
-                    value = elementData[1]
-                }
 
+            const renderContext = new UIElementRenderContext(this, entry, layouter, this.data)
+            const uiElementClass = this.uiElementFactory.getUIElementClass(entry.element_type.name)
+            renderContext.entry.element_type.readonly = renderContext.entry.element_type.readonly || layouter?.layoutSettings?.readonly
+            return uiElementClass.render(renderContext, id)
+        } catch (e) {
+                console.error(`Exception in UIComponent.renderUIElement: ${e}`)
                 return html`
-                    <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
-                        <label for="${id}">${entry.element_type.text!}</label> 
-                        <vaadin-combo-box id="${id}" name="${id}"
-                                          .selectedItem="${displayValue || nothing}"
-                                          value="${displayValue || nothing}"
-                                          data-value="${value}"
-                                          @change="${this.fieldChanged}"></vaadin-combo-box>
-                    </div>
-                `
-            } else {
-                return html`
-            <div class="combobox-div" style="${layouter.renderLayoutStyles(entry.layout)}">
-                <label for="${id}">${entry.element_type.text!}</label> 
-                <div>selection field ${id} is missing a list.</div>
-            </div>`
-            }
+                    ${entry.element_type.name} "${id}": ${e}
+                    `
         }
-    }
-
-    renderLine(id: string, entry: UISchemaUIElement) {
-        return html`
-            <div class="ui-line" id="${id}" style="${this.getPaddingStyle(entry.element_type.padding).replace("padding", "margin")}">
-            </div>
-        `
-    }
-
-    renderTemplateLabel(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
-        const templateLabel = <UISchemaTemplateLabel>entry.element_type
-        const value = replaceData(entry.element_type.value, this.data)
-        const htmlClass = templateLabel.style?`templateLabel ${templateLabel.style}`:'templateLabel'
-        return html`
-            <div class="text-field-div" style="${layouter.renderLayoutStyles(entry.layout)}">
-                ${entry.element_type.text?html`<label for="${id}">${entry.element_type.text!}</label>`:nothing} 
-                <div class="${htmlClass}" id=${id} style="${this.getPaddingStyle(entry.layout?.padding).replace("padding", "margin")}">
-                    ${value || nothing}
-                </div>
-            </div>
-        `
     }
 
     renderElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
         switch (entry.element_type.name.toLowerCase()) {
-            case "textfield":
-                return this.renderTextField(id, entry, layouter)
-            case "templatelabel":
-                return this.renderTemplateLabel(id, entry, layouter)
-            case "selection":
-                return this.renderComboBox(id, entry, layouter)
-            case "datefield":
-                return this.renderDateField(id, entry, layouter)
-            case "datetimefield":
-                return this.renderDateTimeField(id, entry, layouter)
             case "layout":
                 return this.renderLayoutElement(id, <UISchemaLayoutElement>entry.element_type, layouter)
-            case "button":
-                return this.renderButton(id, entry)
-            case "line":
-                return this.renderLine(id, entry)
             default:
-                return html`
-                    ${id}: Unknown field type ${entry.element_type.name}
-                `
+                return this.renderUIElement(id, entry, layouter)
         }
     }
 
@@ -394,44 +337,80 @@ export class UIComponent extends LitElement {
         } else if (typeof padding === "string") {
             style = `padding: ${padding}`
         } else if (padding) {
-            console.log(padding)
             style = `padding: ${(<UISchemaLayoutPadding>padding).top} ${(<UISchemaLayoutPadding>padding).right} ${(<UISchemaLayoutPadding>padding).bottom} ${(<UISchemaLayoutPadding>padding).left}`
         }
         return style
     }
 
-    renderLayoutElement(id: string, entry: UISchemaLayoutElement, layouter: UILayoutClass): TemplateResult {
-        console.log("layouter", layouter)
-        const elementLayouter = this.getLayoutClass(entry.layout_settings)
-        if (!elementLayouter) return html`Unknown Orchestration Strategy in element ${id}`
+    private onRequestUpdate() {
+        console.log("requesting update")
+        this.requestUpdate()
+    }
 
+    renderLayoutElement(id: string, entry: UISchemaLayoutElement, layouter: UILayoutClass): TemplateResult {
+
+        let elementLayouter
+        try {
+            elementLayouter = this.getLayoutClass(id, entry.layout_settings, layouter.layoutSettings?.readonly)
+            elementLayouter.onRequestUpdate = this.onRequestUpdate
+        } catch(e) {
+            return html`cannot create layout ${id}: ${e}`
+        }
+
+        // const layoutType: string = entry.layout_settings?.type || "sheet"
         let style = layouter.renderLayoutStyles(entry.layout)
         style += style?";":"" + this.getPaddingStyle(entry.layout?.padding)
 
-        return this.renderLayout(entry, elementLayouter, style)
+        const layoutRenderContext = new UILayoutRenderContext(this, entry, elementLayouter, this.data)
+        return elementLayouter.renderLayout(layoutRenderContext, elementLayouter, style, this.renderElement.bind(this))
     }
 
-    renderLayout(layoutSchema: UILayout, layouter: UILayoutClass, style: string='' ) {
-        return html`
-            <div class="${layouter.cssClass}" style="${style}">
-                ${Object.entries(layoutSchema.ui_elements).map(([id, entry]) => this.renderElement(id, entry, layouter))}
-            </div>
-        `
+    hideDevelopmentInfo() {
+        this.renderRoot.querySelectorAll(".developer-info").forEach(e=> (e as HTMLElement).style.display="none")
     }
+
+    gotoIdentifier(event: PointerEvent) {
+        const detail = {
+            identifier: (event.currentTarget as HTMLElement).dataset.identifier,
+            fieldId: (event.currentTarget as HTMLElement).id
+        }
+        const gotoEvent = new CustomEvent('goto-identifier',
+            {detail, bubbles: false, composed: true, cancelable: false});
+        this.dispatchEvent(gotoEvent);
+    }
+
+
 
     render() {
-        console.log("rendering...")
-        const layoutClass = this.getLayoutClass(this.uiSchema?.layout_settings)
-        if (!layoutClass) {
+        const itemTemplates: TemplateResult[] = []
+        let layoutClass
+        if (this.showDevelopmentInfo)
+            itemTemplates.push(html`<div class="uicomponent-version" @click="${this.hideDevelopmentInfo}">${html`${(import.meta as any).env.PACKAGE_VERSION}`}</div>`)
+        try {
+            layoutClass = this.getLayoutClass("root", this.uiSchema?.layout_settings)
+            layoutClass.onRequestUpdate = this.onRequestUpdate.bind(this)
+
+        } catch (e) {
             this._showError = `The schema definition is calling an unknown Orchestration Strategy "${this.uiSchema?.layout_settings?.orchestration_strategy}"`
         }
-        if (this._showError) {
-            return html`<div style="background-color: var(--col-bg-alert); color: var(--col-primary-bg-alert); padding: .5em; font-family: monospace">${this._showError}</div>`
-        } else {
-            if (this.uiSchema && layoutClass)
-                return this.renderLayout(this.uiSchema, layoutClass)
-            else
-                return html``
+        if (!this._showError) {
+            try {
+                if (this.uiSchema && layoutClass) {
+                    const layoutRenderContext = new UILayoutRenderContext(this, this.uiSchema, layoutClass, this.data)
+                    itemTemplates.push(layoutClass.renderLayout(layoutRenderContext, layoutClass, "", this.renderElement.bind(this)))
+                }
+            } catch (e) {
+                this._showError = `An error occurred when rendering this component:\n"${e}"`
+            }
         }
+        if (this._showError) {
+            console.log(this._showError)
+            itemTemplates.push(html`
+                <div style="background-color: var(--col-bg-alert); color: var(--col-primary-bg-alert); padding: .5em; font-family: monospace">
+                    ${this._showError}
+                </div>`)
+        }
+
+        return html`${itemTemplates}`
     }
 }

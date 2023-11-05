@@ -2,7 +2,9 @@ import { LitElement, TemplateResult, PropertyValues } from "lit";
 import '@vaadin/date-picker';
 import '@vaadin/date-time-picker';
 import '@vaadin/combo-box';
-import { UISchema, UIInputData, UISchemaUIElement, UISchemaLayoutElement, UILayout, UISchemaLayoutSettings, UISchemaLayoutPadding, UISchemaLookupProvider, UISchemaUIElementWithId } from "./uischema";
+import './fileview';
+import { UIElementFactory } from "./uielementfactory";
+import { UISchema, UIInputData, UISchemaUIElement, UISchemaLayoutElement, UISchemaLayoutSettings, UISchemaLayoutPadding, UISchemaComboBox, UISchemaLookupProvider, UISchemaUIElementWithId, UIComponentDataProvider, UIComponentMoveToNextRowProvider, UIComponentSetSortOrderProvider, UIComponentFetchFileProvider } from "./uischema";
 import { UILayoutClass } from "./layoutclasses";
 export declare class UIComponent extends LitElement {
     static styles: import("lit").CSSResult;
@@ -20,9 +22,16 @@ export declare class UIComponent extends LitElement {
             [key: string]: string;
         };
     };
+    uiElementFactory: UIElementFactory | null;
     uiSchema: UISchema | null;
+    linkIdentifiers: boolean;
+    showDevelopmentInfo: boolean;
     data: UIInputData;
     lookupProvider: UISchemaLookupProvider | null;
+    dataProvider: UIComponentDataProvider | null;
+    moveToNextRow: UIComponentMoveToNextRowProvider | null;
+    setSortOrder: UIComponentSetSortOrderProvider | null;
+    fetchFileProvider: UIComponentFetchFileProvider | null;
     _showError: string | null;
     constructor();
     protected willUpdate(_changedProperties: PropertyValues): void;
@@ -33,20 +42,17 @@ export declare class UIComponent extends LitElement {
     gatherData(): {
         [key: string]: any;
     };
+    fetchFile(event: CustomEvent): void;
     get_field_value(id: string, element: UISchemaUIElement): any;
-    getSelectionValue(id: string, domElement: HTMLFormElement | null): string;
+    getSelectionValue(id: string, domElement: HTMLFormElement | null, comboBox: UISchemaComboBox): any;
     fieldChanged(e: Event): void;
-    getLayoutClass(layoutSettings?: UISchemaLayoutSettings): UILayoutClass | null;
-    renderTextField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;
-    renderDateField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;
-    renderDateTimeField(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;
-    renderButton(id: string, entry: UISchemaUIElement): TemplateResult<1 | 2>;
-    renderComboBox(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;
-    renderLine(id: string, entry: UISchemaUIElement): TemplateResult<1 | 2>;
-    renderTemplateLabel(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;
+    getLayoutClass(layoutElementId: string, layoutSettings?: UISchemaLayoutSettings, inheritReadOnly?: boolean): UILayoutClass;
+    renderUIElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;
     renderElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;
     getPaddingStyle(padding?: string | number | UISchemaLayoutPadding): string;
+    private onRequestUpdate;
     renderLayoutElement(id: string, entry: UISchemaLayoutElement, layouter: UILayoutClass): TemplateResult;
-    renderLayout(layoutSchema: UILayout, layouter: UILayoutClass, style?: string): TemplateResult<1 | 2>;
+    hideDevelopmentInfo(): void;
+    gotoIdentifier(event: PointerEvent): void;
     render(): TemplateResult<1 | 2>;
 }

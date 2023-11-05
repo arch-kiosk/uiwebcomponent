@@ -4,6 +4,7 @@
 
 import {ComboBoxDataProviderParams} from "@vaadin/combo-box";
 import {ComboBoxDataProviderCallback} from "@vaadin/combo-box/src/vaadin-combo-box-data-provider-mixin";
+import * as string_decoder from "string_decoder";
 
 interface Dictionary<T> {
     [Key: string]: T;
@@ -32,8 +33,17 @@ export declare interface UISchemaDSDDict {
 }
 
 export declare interface UISchemaLayoutSettings{
+    type?: "sheet" | "list"
     orchestration_strategy?: string
+    readonly?: boolean
     order?: string[]
+    default_element_visibility?: string | boolean
+}
+
+export declare interface UISchemaListLayoutSettings extends UISchemaLayoutSettings {
+    type: "list"
+    order_records_by: undefined | Array<string>
+    allow_ordering_by: undefined | Array<string>
 }
 
 export declare interface UISchemaUIElement {
@@ -53,7 +63,10 @@ export declare interface UISchemaUIElementBinding {
 
 export declare interface UISchemaUIElementLayoutSettings {
     min_width?: number | "max"
+    max_height?: number | "max"
+    max_width?: number | "max"
     padding?: number | string | UISchemaLayoutPadding
+    readonly?: boolean
 }
 
 export declare interface UISchemaLayoutPadding {
@@ -65,10 +78,15 @@ export declare interface UISchemaLayoutPadding {
 
 export declare interface UISchemaUIElementType {
     name: string
+    enabled: boolean
+    is_identifier?: boolean
     text?: string
     value?: string
+    visible?: string
+    style?: {[key:string]: string}
     extra_style?: string
     padding?: number | string | UISchemaLayoutPadding
+    readonly?: boolean
 }
 
 export declare interface UISchemaLayoutElement extends UISchemaUIElementType, UILayout {
@@ -82,8 +100,20 @@ export declare interface UISchemaButton extends UISchemaUIElementType {
     icon?: string
 }
 
+export declare interface UISchemaTexTField extends UISchemaUIElementType {
+    multiline: boolean
+}
+export declare interface UISchemaDateTimeField extends UISchemaUIElementType {
+    date_format?: string
+    include_time?: boolean
+}
+
+export declare interface UISchemaLine extends UISchemaUIElementType {
+    transparent?: boolean
+}
+
 export declare interface UISchemaComboBox extends UISchemaUIElementType {
-    name: "combobox"
+    name: "selection"
     items: Array<string> | UISchemaLookupSettings
 }
 
@@ -98,7 +128,29 @@ export declare interface UISchemaLookupSettings {
     key: string
 }
 
+export declare interface UISchemaFile extends UISchemaUIElementType {
+    resolution: string
+    file_description?: "right" | "bottom" | "none"
+    align_image?: "center" | "left"
+    fit_content?: "contain" | "fit" | "scale"
+}
+
+
 export type UISchemaLookupProvider = (elementId: string, lookupSettings: UISchemaLookupSettings, params: ComboBoxDataProviderParams<any>, callback: ComboBoxDataProviderCallback<TItem>) => void;
+
+export type UIComponentDataProvider = (exp: string, id?: string) => any;
+
+export type UIComponentMoveToNextRowProvider = (lastUID: string) => string;
+
+export type UIComponentSetSortOrderProvider = (sortOrder: Array<string>) => void;
+
+export type UIComponentFileFetchParams = {
+    uuid: string
+    resolution: string
+    reportURL: (url: string) => void
+}
+
+export type UIComponentFetchFileProvider = (params: UIComponentFileFetchParams) => Promise<string>;
 
 export type UIInputData = Dictionary<T>
 

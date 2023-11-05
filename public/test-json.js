@@ -6,6 +6,9 @@ ui_schema = {
         "scenario": "query input"
     },
     "dsd": {
+        "selectn0": [
+            "datatype(varchar)"
+        ],
         "context_id": [
             "datatype(varchar), identifier()"
         ],
@@ -24,9 +27,25 @@ ui_schema = {
 
     },
     "layout_settings": {
+        "readonly": false,
         "orchestration_strategy": "stack",
     },
     "ui_elements": {
+        "n0": {
+            "binding": {
+                "field_name": "selectn0"
+            },
+            "layout": {
+                "min_width": "2",
+            },
+            "element_type": {
+                "name": "Selection",
+                "text": "context-id",
+                "is_identifier": true,
+                "readonly": false,
+                "items": [["ac", "Architecture"],["dp", "Deposit"],["bu", "Burial"]]
+            }
+        },
         "l0": {
             "element_type": {
                 "name": "layout",
@@ -40,6 +59,7 @@ ui_schema = {
                 },
                 "layout_settings": {
                     "orchestration_strategy": "columns",
+                    readonly: false
                 },
                 "ui_elements": {
                     "e0": {
@@ -53,6 +73,7 @@ ui_schema = {
                             "name": "Selection",
                             "text": "context-id",
                             "is_identifier": true,
+                            "readonly": false,
                             "items": {
                                 "topic": "locus",
                                 "selection": ['type'],
@@ -88,7 +109,12 @@ ui_schema = {
                         "element_type": {
                             "name": "TextField",
                             "value": "${e2}",
-                            "text": "text_filter"
+                            "text": "text filter",
+                            "readonly": false,
+                            "style": {
+                                "classes": "light-background",
+                                "text-align": "right"
+                            }
                         }
                     },
                     "e3": {
@@ -100,6 +126,7 @@ ui_schema = {
                         },
                         "element_type": {
                             "name": "DateField",
+                            "readonly": false,
                             "text": "date field",
                             "value": "${e3}"
                         },
@@ -114,8 +141,8 @@ ui_schema = {
                         "element_type": {
                             "name": "DateTimeField",
                             "text": "date time field",
-                            "value": "${e4}"
-                        },
+                            "readonly": false,
+                            "value": "${e4}"},
                     },
                     "e5template": {
                         "layout": {
@@ -130,7 +157,10 @@ ui_schema = {
                         "element_type": {
                             "name": "TemplateLabel",
                             "value": "${e5TemplateLabel}",
-                            "style": "light-background"
+                            "style": {
+                                "classes": "light-background",
+                                "text-align": "center"
+                            }
                         }
                     }
                 }

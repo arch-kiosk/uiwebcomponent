@@ -17,8 +17,8 @@
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": false,
     "skipLibCheck": true,
-    "target": "ES2022"
-  },
+    "target": "ES2022",
+    },
   "include": ["src/**/*.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -1,19 +1,6 @@
-import { UISchemaLayoutSettings, UISchemaUIElementLayoutSettings } from "./uischema";
-export declare abstract class UILayoutClass {
-    layoutSettings?: UISchemaLayoutSettings;
-    abstract cssClass: string;
-    constructor(layoutSettings?: UISchemaLayoutSettings);
-    abstract renderLayoutStyles(layout?: UISchemaUIElementLayoutSettings): string;
-}
-export declare class UIColumnLayoutClass extends UILayoutClass {
-    cssClass: string;
-    renderLayoutStyles(layout?: UISchemaUIElementLayoutSettings): string;
-}
-export declare class UIStackLayoutClass extends UILayoutClass {
-    cssClass: string;
-    renderLayoutStyles(layout?: UISchemaUIElementLayoutSettings): string;
-}
-export declare class UIRightAlignLayoutClass extends UILayoutClass {
-    cssClass: string;
-    renderLayoutStyles(): string;
-}
+export { UILayoutClass } from "./layouts/uilayoutclass";
+export { UIColumnLayoutClass } from "./layouts/layoutclasscolumn";
+export { UIStackLayoutClass } from "./layouts/layoutclassstack";
+export { UIRightAlignLayoutClass } from "./layouts/layoutclassrightalign";
+export { UITableLayoutClass } from "./layouts/layoutclasstable";
+export { UIGalleryLayoutClass } from "./layouts/layoutclassgallery";

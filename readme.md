@@ -1,5 +1,9 @@
 # 💼 uiwebcomponent
- 
+The central Kiosk independent component to show externally defined user interfaces.
+
+🔗[requirements to get this running](public/readme.md)
+
+
 ## other places
 
 📐 **wiki-based documentation can be found in [the kiosk wiki](https://wiki.arch-kiosk.brown.edu/urapdev/doku.php?id=start)**  (🔒 login needed)
