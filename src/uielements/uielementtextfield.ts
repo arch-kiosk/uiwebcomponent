@@ -51,8 +51,12 @@ export class UIElementTextField extends UIElement {
                         <div style="${cssStyle ? cssStyle : nothing}" id=${id} 
                              class="read-only-textarea ${htmlClass}"
                              data-identifier="${isIdentifier?value:nothing}"
-                             @click="${isIdentifier?context.uicomponent.gotoIdentifier:nothing}">
-                            <span>${isIdentifier?html`<i class="footsteps"></i>`:nothing}${value || nothing}</span>
+                             @click="${isIdentifier?context.uicomponent.gotoIdentifier:nothing}"><span>
+                            ${isIdentifier?html`<i class="footsteps"></i>`:nothing}
+                            <span>
+                                ${value || nothing}
+                            </span>
+                            </span>
                         </div>
                     `)
                 } else {
