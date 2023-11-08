@@ -15,6 +15,7 @@ export class UIElementTextField extends UIElement {
     static render(context: UIElementRenderContext, id: string) {
         try {
             let value = this.haulData(context, context.entry.element_type.value, id)
+
             if (!this.isVisible(context, value)) {
                 return html`${nothing}`
             }
@@ -30,6 +31,10 @@ export class UIElementTextField extends UIElement {
             }
 
             if ((context.entry.element_type as UISchemaTexTField).multiline) {
+                if (typeof value === "string") {
+                    value = value.replace("\r\n", "\n")
+                    value = value.replace("\r", "\n")
+                }
                 if ((!context.entry.element_type.enabled) || context.entry.element_type.readonly) {
                     return context.layouter.renderElement(context.entry.layout, html`
                         ${this.renderLabel(context, id, text)}
