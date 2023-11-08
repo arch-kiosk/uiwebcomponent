@@ -154,7 +154,7 @@ export class UIComponent extends LitElement {
                         showError = `There is an error in the schema definition: the element id "${id}" is illegal. It must start with a letter followed by only letters and numbers`
                         return
                     }
-                    if (id in id_list) {
+                    if (id_list.find(x => x === id)) {
                         console.log(`element id ${id} used more than once in UI schema`)
                         showError = `There is an error in the schema definition: the element id "${id}" is used more than once in the UI schema`
                         return
