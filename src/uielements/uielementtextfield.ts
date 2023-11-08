@@ -33,9 +33,7 @@ export class UIElementTextField extends UIElement {
                 if ((!context.entry.element_type.enabled) || context.entry.element_type.readonly) {
                     return context.layouter.renderElement(context.entry.layout, html`
                         ${this.renderLabel(context, id, text)}
-                        <div style="${cssStyle ? cssStyle : nothing}" id=${id} class="read-only-textarea ${htmlClass}">
-                            ${value || nothing}
-                        </div>
+                        <div style="${cssStyle ? cssStyle : nothing}" id=${id} class="multiline-textarea read-only-textarea ${htmlClass}">${value || nothing}</div>
                     `)
                 } else {
                     return context.layouter.renderElement(context.entry.layout, html`
@@ -51,13 +49,7 @@ export class UIElementTextField extends UIElement {
                         <div style="${cssStyle ? cssStyle : nothing}" id=${id} 
                              class="read-only-textarea ${htmlClass}"
                              data-identifier="${isIdentifier?value:nothing}"
-                             @click="${isIdentifier?context.uicomponent.gotoIdentifier:nothing}"><span>
-                            ${isIdentifier?html`<i class="footsteps"></i>`:nothing}
-                            <span>
-                                ${value || nothing}
-                            </span>
-                            </span>
-                        </div>
+                             @click="${isIdentifier?context.uicomponent.gotoIdentifier:nothing}"><span>${isIdentifier?html`<i class="footsteps"></i>`:nothing}<span>${value || nothing}</span></span></div>
                     `)
                 } else {
                     return context.layouter.renderElement(context.entry.layout, html`
