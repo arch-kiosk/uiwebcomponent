@@ -162,6 +162,20 @@ ui_schema = {
                                 "text-align": "center"
                             }
                         }
+                    },
+                    "myBool": {
+                        "binding": {
+                            "field_name": "myBool"
+                        },
+                        "layout": {
+                            "min_width": 1
+                        },
+                        "element_type": {
+                            "name": "Bool",
+                            "readonly": true,
+                            "value": "${myBool}",
+                            "text": "a boolean"
+                        }
                     }
                 }
             }

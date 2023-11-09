@@ -32,8 +32,8 @@ export class UIElementTextField extends UIElement {
 
             if ((context.entry.element_type as UISchemaTexTField).multiline) {
                 if (typeof value === "string") {
-                    value = value.replace("\r\n", "\n")
-                    value = value.replace("\r", "\n")
+                    value = value.replaceAll("\r\n", "\n")
+                    value = value.replaceAll("\r", "\n")
                 }
                 if ((!context.entry.element_type.enabled) || context.entry.element_type.readonly) {
                     return context.layouter.renderElement(context.entry.layout, html`

@@ -122,6 +122,10 @@ export declare interface UISchemaTemplateLabel extends UISchemaUIElementType {
     style?: string
 }
 
+export declare interface UISchemaBoolField extends UISchemaUIElementType {
+    name: "bool"
+}
+
 export declare interface UISchemaLookupSettings {
     topic: string
     selection: [string]

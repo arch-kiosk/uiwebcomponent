@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="/defaults.css">
     <link rel="stylesheet" href="/test.css">
     <script type="module" src="/src/ui-component.ts"></script>
-    <script src="/unit-sheet.js"></script>
-<!--    <script src="/unit-list.js"></script>-->
+<!--    <script src="/unit-sheet.js"></script>-->
+<!--<script src="/small_find_kaputt.js"></script>-->
+<!--<script src="/unit-list.js"></script>-->
 <!--    <script src="/dayplans.js"></script>-->
 <!--    <script src="/locus-list-kaputt.js"></script>-->
-<!--    <script src="/test-json.js"></script>-->
+    <script src="/test-json.js"></script>
     <title>UI Component Test</title>
   </head>
   <body>
@@ -29,13 +30,25 @@
     const rows = []
 
     function initTestJsonStuff(ui) {
-      ui.data = {"e0": ["0: 6", "6"],
-                 "e1": ["0: 125", "125"],
-                 "e2": "#(asdf)",
-                 "e3": "2012-02-28",
-                 "e4": "2012-02-28T00:15",
-                 "e5TemplateLabel": "This is my template label"
+      const data = {"e0": ["0: 6", "6"],
+        "e1": ["0: 125", "125"],
+        "e2": "#(asdf)",
+        "e3": "2012-02-28",
+        "e4": "2012-02-28T00:15",
+        "myBool": false,
+        "e5TemplateLabel": "This is my template label"}
+      ui.data = data
+      ui.dataProvider = (exp, id) => {
+        console.log("dataProvider", exp, id)
+        if (exp.startsWith("#(") || exp.startsWith(`$\{`)) {
+          const key = exp.substring(2, exp.length-1)
+          if (data.hasOwnProperty(key))
+            return data[key]
+          return undefined
+        } else
+          return data[exp]?data[exp]:exp
       }
+
       ui.lookupProvider = (id, lookupConfig, params, callback) => {
         setTimeout(() => {
           console.log(id, lookupConfig, params)
@@ -50,14 +63,41 @@
         console.log(event.detail.newData)
       })
 
-      ui.dataProvider = (exp, id = undefined) => {
-        console.log(`DataProvider:${exp}, ${id}`)
-      }
+      // ui.dataProvider = (exp, id = undefined) => {
+      //   console.log(`DataProvider:${exp}, ${id}`)
+      // }
 
 
     }
 
     function initUnitSheetStuff(ui) {
+      ui.dataProvider = (exp) => {
+        console.log(`called dataprovider with ${exp}`)
+        const data = {"unit/arch_domain": "DOMAIN",
+          "unit/id_site": "",
+          "unit/arch_context": "",
+          "unit/coordinates": "my coordinates",
+          "unit/term_for_unit": "unit \n identifier",
+          "unit/modified": "2023-02-28T14:00:00",
+          "unit/created": "2023-03-02T12:00:00",
+          "unit/unit_creation_date": "2023-05-03T12:00:00",
+          "unit/purpose": "Once “arch_context” became a FieldType “selection” (correct) it stopped showing its value in read only mode.\r" +
+                  "we need a new attribute “multiline” to turn a TextField into a multiline field (textarea in html).\r" +
+                  "we need a way to skip fields. I am not sure if the DSDView is really the right place to do that.\r" +
+                  "we need a way to manipulate the field order without having to list all elements manually in the general.pld. I am not sure, again, whether the DSDView would be the right place to do that. Of course, field order might matter for file export or something like that, too.\n" +
+                  "the orchestration strategy “grid” is not defined, yet.\r"
+        }
+        if (exp.startsWith("#(")) {
+          const key = exp.substring(2, exp.length-1)
+          if (data.hasOwnProperty(key))
+            return data[key]
+          return undefined
+        } else
+          return exp
+      }
+    }
+
+    function initSmallFindSheetStuff(ui) {
       ui.dataProvider = (exp) => {
         console.log(`called dataprovider with ${exp}`)
         const data = {"unit/arch_domain": "DOMAIN",
@@ -319,8 +359,9 @@
     let ui = document.getElementById("ui")
     // ui_schema = JSON.parse(json)
     console.log(ui_schema)
-    // initTestJsonStuff(ui)
-    initUnitSheetStuff(ui)
+    initTestJsonStuff(ui)
+    // initUnitSheetStuff(ui)
+    // initSmallFindSheetStuff(ui)
     // initUnitListStuff(ui)
     // initLocusListStuff(ui)
     // initDayplanListStuff(ui)

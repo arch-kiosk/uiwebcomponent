@@ -7,6 +7,7 @@ import {UIElementTemplateLabel} from "./uielements/uielementtemplatelabel";
 import {UIElementComboBox} from "./uielements/uielementcombobox";
 import {UIElementLine} from "./uielements/uielementline";
 import {UIElementFile} from "./uielements/uielementfile";
+import {UIElementBoolField} from "./uielements/uielementboolfield";
 
 export class UIDefaultElementFactory extends UIConfigurableElementFactory {
     constructor() {
@@ -19,5 +20,6 @@ export class UIDefaultElementFactory extends UIConfigurableElementFactory {
         this.addUIElementClass("selection", UIElementComboBox)
         this.addUIElementClass("line", UIElementLine)
         this.addUIElementClass("file", UIElementFile)
+        this.addUIElementClass("bool", UIElementBoolField)
     }
 }

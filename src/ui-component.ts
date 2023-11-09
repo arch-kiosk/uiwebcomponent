@@ -215,6 +215,8 @@ export class UIComponent extends LitElement {
         switch (element.element_type.name.toLowerCase()) {
             case "selection":
                 return this.getSelectionValue(id, domElement, element.element_type as UISchemaComboBox)
+            case "bool":
+                return !!domElement?.checked
             default: return domElement?.value?domElement?.value:""
 
         }
