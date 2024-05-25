@@ -9,6 +9,7 @@ export declare class RenderContext {
     constructor(component: UIComponent, layouter: UILayoutClass, data: UIInputData);
     haulData(value?: string, id?: string): any;
     resetCursor(): void;
+    getCurrentUID(): any;
     next(): boolean;
 }
 export declare class UIElementRenderContext extends RenderContext {

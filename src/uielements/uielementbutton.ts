@@ -1,9 +1,13 @@
 import {UIElement} from "./uielement";
 import {nothing, html} from "lit";
-import {UISchemaButton} from "../uischema";
+import {UISchemaButton, UISchemaUIElementType} from "../uischema";
 import {UIElementRenderContext} from "../uielementrendercontext";
 
 export class UIElementButton extends UIElement {
+    static defaultAction(element: UISchemaUIElementType): string|undefined {
+        return element?.default
+    }
+
     static render(context: UIElementRenderContext, id: string) {
         const button = <UISchemaButton>context.entry.element_type
         let buttonText = ""

@@ -67,4 +67,9 @@ export class UIElement {
 
         return currentStyles?currentStyles + ";":"" + newStyle
     }
+
+    // @ts-ignore
+    static defaultAction(element: UISchemaUIElementType): string|undefined {
+        return undefined;
+    }
 }

@@ -10,4 +10,5 @@ export declare class UIElement {
     static getStyleSetting(element: UISchemaUIElementType, attribute: string, _default: string): string;
     static getStyleTextAlign(element: UISchemaUIElementType): "" | "text-align: left" | "text-align: right" | "text-align: center";
     static addStyle(currentStyles: string, newStyle: string): string;
+    static defaultAction(element: UISchemaUIElementType): string | undefined;
 }

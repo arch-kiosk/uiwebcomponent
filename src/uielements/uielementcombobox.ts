@@ -64,7 +64,8 @@ export class UIElementComboBox extends UIElement {
                                       .selectedItem="${value || nothing}"
                                       class="${htmlClass}"
                                       style="${cssStyle}"
-                                      @change="${context.uicomponent.fieldChanged}">
+                                      @change="${context.uicomponent.fieldChanged}"
+                                      @keyup="${context.uicomponent.keyupOnElement}">
                                       ?disabled=${(!context.entry.element_type.enabled)}
                     </vaadin-combo-box>
                 `)
@@ -98,6 +99,7 @@ export class UIElementComboBox extends UIElement {
                                   value="${displayValue || nothing}"
                                   data-value="${value}"
                                   @change="${context.uicomponent.fieldChanged}"
+                                  @keyup="${context.uicomponent.keyupOnElement}"
                                   ?disabled=${(!context.entry.element_type.enabled)}>
                 </vaadin-combo-box>
             `)

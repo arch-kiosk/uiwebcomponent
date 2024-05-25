@@ -16,6 +16,7 @@ export declare abstract class UILayoutClass {
     abstract renderLayoutStyles(layout?: UISchemaUIElementLayoutSettings): string;
     protected requestUpdate(): void;
     get defaultElementVisibility(): string | boolean;
+    onKeyUp(event: KeyboardEvent): void;
     renderLayout(renderContext: UILayoutRenderContext, layouter: UILayoutClass, style: string, renderElement: (id: string, entry: UISchemaUIElement, layouter: UILayoutClass) => TemplateResult): TemplateResult;
     renderElement(layout: UISchemaUIElementLayoutSettings | undefined, element: TemplateResult): TemplateResult;
     getOrderedElements(layoutSchema: UILayout): Array<string>;

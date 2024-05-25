@@ -32,6 +32,22 @@ export class RenderContext {
         this._lastUID = ""
     }
 
+    public getCurrentUID() {
+        try {
+            if (!!this.uicomponent.dataProvider) {
+                let value = this.uicomponent.dataProvider("#(uid)", undefined)
+                if (value && value === "#(uid)") {
+                    return undefined
+                } else {
+                    return value
+                }
+            }
+        } catch(e) {
+            console.error(`uielementrendercontext.getCurrentUID:`,e)
+        }
+        return undefined
+    }
+
     public next() : boolean {
         if (this.uicomponent && this.uicomponent.moveToNextRow) {
             this._lastUID = this.uicomponent.moveToNextRow(this._lastUID)

@@ -24,7 +24,7 @@ export class UIElementTextField extends UIElement {
             let cssStyle = this.addStyle("", this.getStyleTextAlign(context.entry.element_type))
             let isIdentifier = this.isIdentifier(context)
             if (context.entry.layout?.max_height) {
-                cssStyle = this.addStyle(cssStyle, `max-height: ${context.entry.layout.max_height === "max"? "none" : context.entry.layout.max_height + " em"}`)
+                cssStyle = this.addStyle(cssStyle, `max-height: ${context.entry.layout.max_height === "max"? "none" : context.entry.layout.max_height + "em"}`)
             }
             if (this.isIdentifier(context)) {
                 htmlClass = (htmlClass?" ":"") + "identifier-link"

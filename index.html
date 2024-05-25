@@ -9,9 +9,9 @@
 <!--    <script src="/unit-sheet.js"></script>-->
 <!--<script src="/small_find_kaputt.js"></script>-->
 <!--<script src="/unit-list.js"></script>-->
-<!--    <script src="/dayplans.js"></script>-->
+    <!--<script src="/dayplans.js"></script>-->
 <!--    <script src="/locus-list-kaputt.js"></script>-->
-    <script src="/test-json.js"></script>
+   <script src="/test-json.js"></script>
     <title>UI Component Test</title>
   </head>
   <body>
@@ -21,6 +21,7 @@
     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi ducimus excepturi facilis fugit laboriosam necessitatibus perspiciatis quas voluptate? Ab accusantium alias aliquid aspernatur debitis dolor itaque provident quis quisquam temporibus.
     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi ducimus excepturi facilis fugit laboriosam necessitatibus perspiciatis quas voluptate? Ab accusantium alias aliquid aspernatur debitis dolor itaque provident quis quisquam temporibus.
   </div>
+  <button onclick="gotoRecord(5)">goto record 5</button>
   <div style="display: flex; padding: 5em">
     <ui-component id="ui" >
     </ui-component>
@@ -54,13 +55,14 @@
           console.log(id, lookupConfig, params)
           let l = []
           for (let i = 1; i <= 250; i++) {
-            l.push([params.page * params.pageSize + i, `${params.page}: ${i.toString()}`])
+            const c = String.fromCharCode(65 + i % 65)
+            l.push([params.page * params.pageSize + i, `${c} -  ${params.page}: ${i.toString()}`])
           }
           callback(l, 250)
         }, 1000)
       }
       ui.addEventListener("dataChanged", (event) => {
-        console.log(event.detail.newData)
+        console.log(event.detail.srcElement, event.detail.newData)
       })
 
       // ui.dataProvider = (exp, id = undefined) => {
@@ -348,13 +350,17 @@
           CURRENT_ROW = ""
         }
         return CURRENT_ROW
-
       };
 
       ui.setSortOrder = (sortOrder) => console.log("SortOrder is", sortOrder)
-
     }
 
+    function gotoRecord(record) {
+      let ui = document.getElementById("ui")
+      if (ui) {
+        ui.gotoRecord(record)
+      }
+    }
 
     let ui = document.getElementById("ui")
     // ui_schema = JSON.parse(json)

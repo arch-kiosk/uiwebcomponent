@@ -27,24 +27,25 @@ export class UIElementFile extends UIElement {
             let alignFileDescription = imageElement.file_description || "bottom"
 
             if (context.entry.layout?.max_height) {
-                cssStyle = this.addStyle(cssStyle, `max-height: ${context.entry.layout.max_height === "max"? "" : context.entry.layout.max_height + " px"}`)
+                cssStyle = this.addStyle(cssStyle, `max-height: ${context.entry.layout.max_height === "max"? "" : context.entry.layout.max_height + "px"}`)
             }
             if (context.entry.layout?.max_width) {
-                cssStyle = this.addStyle(cssStyle, `max-width: ${context.entry.layout.max_width === "max"? "" : context.entry.layout.max_width + " px"}`)
+                cssStyle = this.addStyle(cssStyle, `max-width: ${context.entry.layout.max_width === "max"? "" : context.entry.layout.max_width + "px"}`)
             }
 
             return context.layouter.renderElement(context.entry.layout, html`
                 ${this.renderLabel(context, id, text)}
                 <div style="${cssStyle ? cssStyle : nothing}" id=${id} class="read-only-image ${htmlClass}">
                     <div class="${(imageElement.align_image === "left" || imageElement.fit_content === "scale")?'image-left-align':'image-center'}">
-                        <file-view 
+                        ${value?html`
+                                <file-view 
                                 id="${value}" 
                                 uuid_file="${value}" 
                                 resolution="${imageElement.resolution}" 
                                 description=${description} 
                                 fitcontent="${imageElement.fit_content || 'contain'}"
                                 @fetchfile="${context.uicomponent.fetchFile}">
-                        </file-view>
+                        </file-view>`:nothing}
                     </div>
                     ${(alignFileDescription === "bottom" && description)?html`
                             <div class="file-element-description">${description}</div>

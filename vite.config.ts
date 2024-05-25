@@ -26,7 +26,7 @@ export default defineConfig(({ command, mode }) => {
         command == "build"
             ? {
               //No console.logs in the distribution
-              drop: ["console", "debugger"],
+              // drop: ["console", "debugger"],
             }
             : {},
     server: {
@@ -40,6 +40,7 @@ export default defineConfig(({ command, mode }) => {
     plugins: [dts()],
     define: {
       'import.meta.env.PACKAGE_VERSION': JSON.stringify(packageJson.version)
-    }
-    // publicDir: "/public",
+    },
+
+    // publicDir: "/public/static"
 }})

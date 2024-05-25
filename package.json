@@ -1,7 +1,7 @@
 {
   "name": "uicomponent",
   "private": true,
-  "version": "0.4.15",
+  "version": "0.5.12",
   "type": "module",
   "main": "./dist/uicomponent.js",
   "module": "./dist/uicomponent.js",
@@ -15,16 +15,16 @@
     "./dist"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "rollout": "npm pack --pack-destination .\\npm"
+    "dev": "vite --host",
+    "build only": "tsc && vite build",
+    "rollout": "tsc && vite build && npm pack --pack-destination .\\npm"
   },
   "dependencies": {
-    "@vaadin/combo-box": "^24.0.0",
-    "@vaadin/date-picker": "^24.0.0",
-    "@vaadin/date-time-picker": "^24.0.0",
+    "@vaadin/combo-box": "^24.3.10",
+    "@vaadin/date-picker": "^24.3.10",
+    "@vaadin/date-time-picker": "^24.3.10",
     "jest": "^29.5.0",
-    "lit": "^2.6.1",
+    "lit": "^3.1.2",
     "luxon": "^3.4.0",
     "ts-node": "^10.9.1"
   },

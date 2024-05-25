@@ -22,7 +22,7 @@ export class UIElementBoolField extends UIElement {
             let htmlClass = this.getStyleSetting(context.entry.element_type, "classes", "")
             let cssStyle = this.addStyle("", this.getStyleTextAlign(context.entry.element_type))
             if (context.entry.layout?.max_height) {
-                cssStyle = this.addStyle(cssStyle, `max-height: ${context.entry.layout.max_height === "max"? "none" : context.entry.layout.max_height + " em"}`)
+                cssStyle = this.addStyle(cssStyle, `max-height: ${context.entry.layout.max_height === "max"? "none" : context.entry.layout.max_height + "em"}`)
             }
 
             if (context.entry.element_type.readonly) {

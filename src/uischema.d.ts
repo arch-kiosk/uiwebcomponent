@@ -87,6 +87,7 @@ export declare interface UISchemaUIElementType {
     extra_style?: string
     padding?: number | string | UISchemaLayoutPadding
     readonly?: boolean
+    default?: "ENTER" | "CANCEL"
 }
 
 export declare interface UISchemaLayoutElement extends UISchemaUIElementType, UILayout {

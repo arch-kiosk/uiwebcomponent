@@ -47,6 +47,10 @@ export abstract class UILayoutClass {
         return this.layoutSettings.default_element_visibility
     }
 
+    public onKeyUp(event: KeyboardEvent) {
+        console.log(event)
+    }
+
     public renderLayout(renderContext: UILayoutRenderContext, layouter: UILayoutClass, style: string,
                         renderElement: (id: string, entry: UISchemaUIElement, layouter: UILayoutClass) => TemplateResult): TemplateResult {
         const layoutSchema = renderContext.entry as UILayout
@@ -54,7 +58,7 @@ export abstract class UILayoutClass {
         const renderedElements = elements.map((id) => renderElement(id, layoutSchema.ui_elements[id], layouter))
 
         return html`
-            <div class="${this.cssClass}" style="${style}">
+            <div class="${this.cssClass}" style="${style}"">
                 ${renderedElements}
             </div>
         `

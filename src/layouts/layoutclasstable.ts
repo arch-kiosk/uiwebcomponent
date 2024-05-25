@@ -87,7 +87,7 @@ export class UITableLayoutClass extends UIListLayoutClass {
         this._initSorting(renderContext)
         while (renderContext.next()) {
             rows.push(html`
-                <tr>
+                <tr id="R${renderContext.getCurrentUID()?renderContext.getCurrentUID():nothing}">
                     ${elements.map((id) => renderElement(id, renderContext.entry.ui_elements[id], layouter))}
                 </tr>
             `)

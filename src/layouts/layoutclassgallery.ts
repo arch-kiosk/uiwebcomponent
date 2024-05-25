@@ -1,5 +1,5 @@
 import {UISchemaUIElement, UISchemaUIElementLayoutSettings} from "../uischema";
-import {html, TemplateResult} from "lit";
+import {html, nothing, TemplateResult} from "lit";
 import {UILayoutRenderContext} from "../uielementrendercontext";
 import {UILayoutClass, UIListLayoutClass} from "./uilayoutclass";
 
@@ -23,7 +23,7 @@ export class UIGalleryLayoutClass extends UIListLayoutClass {
         this._initSorting(renderContext)
         while (renderContext.next()) {
             items.push(html`
-                <div class="gallery-item">
+                <div id="R${renderContext.getCurrentUID()?renderContext.getCurrentUID():nothing}" class="gallery-item">
                     ${elements.map((id) => renderElement(id, renderContext.entry.ui_elements[id], layouter))}
                 </div>
             `)

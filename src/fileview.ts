@@ -1,10 +1,10 @@
-import {customElement, LitElement} from 'lit-element';
+import {LitElement} from 'lit-element';
 
 // @ts-ignore
 import local_css from './styles/component-file-view.sass?inline';
 import {nothing, PropertyValues, unsafeCSS} from "lit";
 import {html} from "lit";
-import {property, state} from "lit/decorators.js";
+import {property, state, customElement} from "lit/decorators.js";
 import {UIComponentFileFetchParams} from "./uischema";
 
 @customElement('file-view')

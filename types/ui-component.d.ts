@@ -33,18 +33,23 @@ export declare class UIComponent extends LitElement {
     setSortOrder: UIComponentSetSortOrderProvider | null;
     fetchFileProvider: UIComponentFetchFileProvider | null;
     _showError: string | null;
+    private _default;
     constructor();
     protected willUpdate(_changedProperties: PropertyValues): void;
+    keyupOnElement(e: KeyboardEvent): void;
     firstUpdated(_changedProperties: any): void;
     updated(_changedProperties: any): void;
     getSchemaElement(id: string): UISchemaUIElement;
+    gotoRecord(uid: string): boolean;
     processSchemaDefinition(): void;
+    private registerDefault;
     gatherData(): {
         [key: string]: any;
     };
     fetchFile(event: CustomEvent): void;
     get_field_value(id: string, element: UISchemaUIElement): any;
     getSelectionValue(id: string, domElement: HTMLFormElement | null, comboBox: UISchemaComboBox): any;
+    fieldChangedById(id: string): void;
     fieldChanged(e: Event): void;
     getLayoutClass(layoutElementId: string, layoutSettings?: UISchemaLayoutSettings, inheritReadOnly?: boolean): UILayoutClass;
     renderUIElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;

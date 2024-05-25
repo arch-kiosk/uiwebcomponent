@@ -172,7 +172,7 @@ ui_schema = {
                         },
                         "element_type": {
                             "name": "Bool",
-                            "readonly": true,
+                            "readonly": false,
                             "value": "${myBool}",
                             "text": "a boolean"
                         }
@@ -199,7 +199,8 @@ ui_schema = {
                     "e7": {
                         "element_type": {
                             "name": "Button",
-                            "type": "cancelButton"
+                            "type": "cancelButton",
+                            "default": "CANCEL"
                         }
                     },
                     "e8": {
@@ -213,6 +214,7 @@ ui_schema = {
                             "name": "Button",
                             "type": "iconButton",
                             "icon": "",
+                            "default": "ENTER",
                             "extra_style": "padding-left:5px"
                         }
                     }

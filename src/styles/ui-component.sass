@@ -12,6 +12,11 @@
   --lumo-font-family: var(--standard-text-font)
   width: 100%
 
+////for safari and iOS:
+//input:disabled, textarea:disabled, input:disabled::placeholder, textarea:disabled::placeholder
+//  -webkit-text-fill-color: currentcolor
+//  opacity: 1
+
 .developer-info
   background-color: darkgreen
   color: lightyellow
@@ -114,6 +119,9 @@ input,textarea
   input:disabled, textarea:disabled
     background-color: $col-bg-1-lighter
     color: $col-primary-bg-1
+    -webkit-text-fill-color: currentcolor
+    opacity: 1
+
 .text-cell
   @extend .ui-field
   display: table-cell

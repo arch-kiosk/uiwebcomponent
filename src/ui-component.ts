@@ -80,6 +80,8 @@ export class UIComponent extends LitElement {
     @state()
     _showError: string | null = null
 
+    private _default: {[key: string]: string} = {};
+
     constructor() {
         super();
         this._messages = {}
@@ -90,6 +92,16 @@ export class UIComponent extends LitElement {
         // super.willUpdate(_changedProperties);
         if (_changedProperties.has("uiSchema")) {
             this.processSchemaDefinition()
+        }
+    }
+
+    public keyupOnElement(e: KeyboardEvent) {
+        if (e.key === "Enter" && this._default?.["ENTER"]) {
+            this.fieldChangedById(this._default?.["ENTER"])
+        } else {
+            if (e.key === "Escape" && this._default?.["CANCEL"]) {
+                this.fieldChangedById(this._default?.["CANCEL"])
+            }
         }
     }
 
@@ -111,6 +123,7 @@ export class UIComponent extends LitElement {
                 //Todo: This should be in the uielementcombobox.ts
                 comboBox.dataProvider = async (params, callback) => {
                     if (!(comboBox.id in this._selection_data)) {
+                        console.log("looking up", params)
                         lookupProvider(comboBox.id,
                             <UISchemaLookupSettings>selectionElement.items,
                             params,
@@ -144,8 +157,66 @@ export class UIComponent extends LitElement {
         return this._element_list[id]
     }
 
+    // private _isScrollable (node: Element) {
+    //     if (!(node instanceof HTMLElement || node instanceof SVGElement)) {
+    //         return false
+    //     }
+    //     const style = getComputedStyle(node)
+    //     return ['overflow', 'overflow-x', 'overflow-y'].some((propertyName) => {
+    //         const value = style.getPropertyValue(propertyName)
+    //         return value === 'auto' || value === 'scroll'
+    //     })
+    // }
+    //
+    // public getScrollParent (node: Element): HTMLElement {
+    //     let currentParent = node.parentElement
+    //     while (currentParent) {
+    //         if (this._isScrollable(currentParent)) {
+    //             return currentParent
+    //         }
+    //         currentParent = currentParent.parentElement
+    //     }
+    //     return <HTMLElement> (document.scrollingElement || document.documentElement)
+    // }
+
+    public gotoRecord(uid: string) {
+        try {
+            let el = this.shadowRoot?.querySelector(`#R${uid}`)
+            if (el) {
+                // (<HTMLElement>el).style.border = "1px solid red"
+                console.log(`gotoRecord found`, el)
+                el.scrollIntoView({behavior: "smooth"})
+                // if (scrollBy != 0) {
+                //     if (typeof scrollParent === "undefined") {
+                //         scrollParent = this.getScrollParent(el)
+                //     }
+                //     if (scrollParent) {
+                //         console.log("scrollParent", scrollParent)
+                //         scrollParent.scrollBy(0, scrollBy)
+                //     } else {
+                //         console.log("NO scrollParent at all found.")
+                //     }
+                // }
+                this.dispatchEvent(new CustomEvent("scrolled-into-view", {
+                    detail: {
+                        "element": el,
+                    },
+                    composed: true,
+                    bubbles: true
+                }))
+                console.log("scrolled-into-view triggered for ", el)
+                return true
+            } else {
+                console.error(`uicomponent.gotoRecord: #R${uid} not found.`)
+            }
+        } catch(e) {
+            console.error(`uicomponent.gotoRecord: #R${uid} error`,e)
+        }
+        return false
+    }
+
     processSchemaDefinition() {
-        function _add_elements(ui_elements?: Dictionary<UISchemaUIElement>) {
+        const _add_elements = (ui_elements?: Dictionary<UISchemaUIElement>) => {
             if (ui_elements) {
                 Object.entries(ui_elements).map(([id, entry]) => {
                     const regex = new RegExp('^[a-z][a-z0-9\\-_]*$',"gmi")
@@ -172,6 +243,9 @@ export class UIComponent extends LitElement {
                     }
                     if (entry.element_type.enabled === undefined)
                         entry.element_type.enabled = true
+                    if (entry.element_type.default) {
+                        this.registerDefault(id, entry)
+                    }
                     element_list[id] = entry
                     if (entry.element_type.name === "layout") {
                         _add_elements((<UISchemaLayoutElement>entry.element_type).ui_elements)
@@ -190,6 +264,13 @@ export class UIComponent extends LitElement {
         }
         this._showError = showError
         console.log(this._dsd_to_element_list)
+    }
+
+    private registerDefault(id: string, entry: UISchemaUIElement) {
+        console.log(`default for ${entry.element_type.name} ${id} is ${entry.element_type.default}`)
+        if (entry.element_type?.default) {
+            this._default[entry.element_type.default] = id
+        }
     }
 
 
@@ -251,6 +332,16 @@ export class UIComponent extends LitElement {
         }
         return dataValue?dataValue:""
     }
+    fieldChangedById(id: string) {
+        const options = {
+            detail: {
+                "srcElement": id,
+                "newData": this.gatherData()
+            },
+            bubbles: true
+        }
+        this.dispatchEvent(new CustomEvent('dataChanged', options))
+    }
 
     fieldChanged(e: Event) {
         if ("currentTarget" in e) {
@@ -259,14 +350,7 @@ export class UIComponent extends LitElement {
             // if (element.element_type.name.toLowerCase() == "selection") {
             //     this.selectionChanged(<HTMLInputElement>e.currentTarget)
             // }
-            const options = {
-                detail: {
-                    "srcElement": id,
-                    "newData": this.gatherData()
-                },
-                bubbles: true
-            }
-            this.dispatchEvent(new CustomEvent('dataChanged', options))
+            this.fieldChangedById(id)
         }
     }
 
