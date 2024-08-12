@@ -185,7 +185,7 @@ export class UIComponent extends LitElement {
             if (el) {
                 // (<HTMLElement>el).style.border = "1px solid red"
                 console.log(`gotoRecord found`, el)
-                el.scrollIntoView({behavior: "smooth"})
+                el.scrollIntoView()
                 // if (scrollBy != 0) {
                 //     if (typeof scrollParent === "undefined") {
                 //         scrollParent = this.getScrollParent(el)
