@@ -189,6 +189,12 @@ td
   @extend .read-only-textarea
   display: flex
   //width: 100%
+  border: 2px solid $col-bg-body
+  &:hover, &active
+    border: 2px solid $col-accent-bg-body
+.gallery-item-selected
+  border: 2px solid $col-success-bg-body
+
 .image-center
   margin: auto //this is what centers a read-only-image within its parent.
   overflow: auto
