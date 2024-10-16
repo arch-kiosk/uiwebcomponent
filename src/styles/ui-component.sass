@@ -235,3 +235,34 @@ vaadin-date-picker > input:disabled, vaadin-time-picker > input:disabled, vaadin
   .read-only-image
     background: none
 
+.gallery-sub-item
+  @extend .ui-field
+  overflow: hidden
+  .ui-field
+    margin-top: 1px
+
+.gallery-sub-item:first-child
+  flex-grow: 1
+
+.date-time-frame
+  background-color: $col-bg-1-lighter
+  display: flex
+  flex-direction: row
+  align-items: center
+.time-zone-marker
+  display: inline-block
+  border-right: solid 1px $col-bg-1-darker
+  width: 28px
+  padding: 4px 4px
+  font-size: $font-size-standard
+.time-zone-marker:before
+  content: ""
+.date-time-popover
+  position: absolute
+  display: none
+  background-color: $col-bg-ack
+  color: $col-primary-bg-ack
+  padding: 5px
+  font-family: $standard-text
+  font-size: $font-size-standard
+  font-weight: normal

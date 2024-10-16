@@ -1,5 +1,5 @@
 import { UIComponent } from "./ui-component";
-import { UIInputData, UILayout, UISchemaUIElement } from "./uischema";
+import { ApiTimeZoneInfo, UIInputData, UILayout, UISchemaUIElement } from "./uischema";
 import { UILayoutClass } from "./layoutclasses";
 export declare class RenderContext {
     uicomponent: UIComponent;
@@ -8,6 +8,7 @@ export declare class RenderContext {
     _lastUID: string;
     constructor(component: UIComponent, layouter: UILayoutClass, data: UIInputData);
     haulData(value?: string, id?: string): any;
+    getTimeZoneInfo(tzIndex: number | undefined): ApiTimeZoneInfo | undefined;
     resetCursor(): void;
     getCurrentUID(): any;
     next(): boolean;

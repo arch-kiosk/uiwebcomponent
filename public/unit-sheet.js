@@ -137,7 +137,7 @@ ui_schema = {
             "element_type": {
                 "name": "DateTimeField",
                 "text": "created",
-                "value": null
+                "value": "#(unit/created)"
             }
         },
         "excavator_full_name": {

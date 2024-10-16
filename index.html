@@ -9,9 +9,9 @@
 <!--    <script src="/unit-sheet.js"></script>-->
 <!--<script src="/small_find_kaputt.js"></script>-->
 <!--<script src="/unit-list.js"></script>-->
-    <!--<script src="/dayplans.js"></script>-->
+    <script src="/dayplans.js"></script>
 <!--    <script src="/locus-list-kaputt.js"></script>-->
-   <script src="/test-json.js"></script>
+<!--   <script src="/test-json.js"></script> -->
     <title>UI Component Test</title>
   </head>
   <body>
@@ -73,6 +73,14 @@
     }
 
     function initUnitSheetStuff(ui) {
+      ui.timeZoneInfoProvider = (tzIndex) => {
+        if (tzIndex === 40123984) return {
+          tz_IANA: "Europe/Paris",
+          tz_long: "Paris in Europe",
+          deprecated: true
+        }
+        return undefined
+      }
       ui.dataProvider = (exp) => {
         console.log(`called dataprovider with ${exp}`)
         const data = {"unit/arch_domain": "DOMAIN",
@@ -80,8 +88,8 @@
           "unit/arch_context": "",
           "unit/coordinates": "my coordinates",
           "unit/term_for_unit": "unit \n identifier",
-          "unit/modified": "2023-02-28T14:00:00",
-          "unit/created": "2023-03-02T12:00:00",
+          "unit/modified": "2021-07-22T12:29:20+00:00@40123984",
+          "unit/created": "2024-09-03T18:47:46+00:00@40123984",
           "unit/unit_creation_date": "2023-05-03T12:00:00",
           "unit/purpose": "Once “arch_context” became a FieldType “selection” (correct) it stopped showing its value in read only mode.\r" +
                   "we need a new attribute “multiline” to turn a TextField into a multiline field (textarea in html).\r" +
@@ -365,12 +373,12 @@
     let ui = document.getElementById("ui")
     // ui_schema = JSON.parse(json)
     console.log(ui_schema)
-    initTestJsonStuff(ui)
+    // initTestJsonStuff(ui)
     // initUnitSheetStuff(ui)
     // initSmallFindSheetStuff(ui)
-    // initUnitListStuff(ui)
+    //initUnitListStuff(ui)
     // initLocusListStuff(ui)
-    // initDayplanListStuff(ui)
+    initDayplanListStuff(ui)
     // initSiteSheetStuff(ui)
     ui.uiSchema = ui_schema
     ui.showDevelopmentInfo=true

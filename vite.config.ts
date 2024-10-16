@@ -11,7 +11,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     build: {
       copyPublicDir: false,
-
+      minify: false,
       lib: {
         entry: resolve(__dirname, 'src/ui-component.ts'),
         name: 'UIComponent',

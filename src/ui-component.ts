@@ -26,9 +26,12 @@ import {
     UIComponentDataProvider,
     UIComponentMoveToNextRowProvider,
     UIComponentSetSortOrderProvider,
-    UIComponentFetchFileProvider, UIComponentFileFetchParams
+    UIComponentFetchFileProvider, UIComponentFileFetchParams, UIComponentTimeZoneInfoProvider
 
 } from "./uischema";
+
+export type {ApiTimeZoneInfo} from "./uischema";
+
 import {
     UIStackLayoutClass,
     UIColumnLayoutClass,
@@ -67,6 +70,9 @@ export class UIComponent extends LitElement {
 
     @property()
     dataProvider: UIComponentDataProvider | null = null
+
+    @property()
+    timeZoneInfoProvider: UIComponentTimeZoneInfoProvider | null = null
 
     @property()
     moveToNextRow: UIComponentMoveToNextRowProvider | null = null
@@ -332,6 +338,7 @@ export class UIComponent extends LitElement {
         }
         return dataValue?dataValue:""
     }
+
     fieldChangedById(id: string) {
         const options = {
             detail: {

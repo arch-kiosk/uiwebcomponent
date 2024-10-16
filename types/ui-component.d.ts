@@ -4,7 +4,8 @@ import '@vaadin/date-time-picker';
 import '@vaadin/combo-box';
 import './fileview';
 import { UIElementFactory } from "./uielementfactory";
-import { UISchema, UIInputData, UISchemaUIElement, UISchemaLayoutElement, UISchemaLayoutSettings, UISchemaLayoutPadding, UISchemaComboBox, UISchemaLookupProvider, UISchemaUIElementWithId, UIComponentDataProvider, UIComponentMoveToNextRowProvider, UIComponentSetSortOrderProvider, UIComponentFetchFileProvider } from "./uischema";
+import { UISchema, UIInputData, UISchemaUIElement, UISchemaLayoutElement, UISchemaLayoutSettings, UISchemaLayoutPadding, UISchemaComboBox, UISchemaLookupProvider, UISchemaUIElementWithId, UIComponentDataProvider, UIComponentMoveToNextRowProvider, UIComponentSetSortOrderProvider, UIComponentFetchFileProvider, UIComponentTimeZoneInfoProvider } from "./uischema";
+export type { ApiTimeZoneInfo } from "./uischema";
 import { UILayoutClass } from "./layoutclasses";
 export declare class UIComponent extends LitElement {
     static styles: import("lit").CSSResult;
@@ -29,6 +30,7 @@ export declare class UIComponent extends LitElement {
     data: UIInputData;
     lookupProvider: UISchemaLookupProvider | null;
     dataProvider: UIComponentDataProvider | null;
+    timeZoneInfoProvider: UIComponentTimeZoneInfoProvider | null;
     moveToNextRow: UIComponentMoveToNextRowProvider | null;
     setSortOrder: UIComponentSetSortOrderProvider | null;
     fetchFileProvider: UIComponentFetchFileProvider | null;
@@ -52,12 +54,12 @@ export declare class UIComponent extends LitElement {
     fieldChangedById(id: string): void;
     fieldChanged(e: Event): void;
     getLayoutClass(layoutElementId: string, layoutSettings?: UISchemaLayoutSettings, inheritReadOnly?: boolean): UILayoutClass;
-    renderUIElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;
-    renderElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult<1 | 2>;
+    renderUIElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult;
+    renderElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult;
     getPaddingStyle(padding?: string | number | UISchemaLayoutPadding): string;
     private onRequestUpdate;
     renderLayoutElement(id: string, entry: UISchemaLayoutElement, layouter: UILayoutClass): TemplateResult;
     hideDevelopmentInfo(): void;
     gotoIdentifier(event: PointerEvent): void;
-    render(): TemplateResult<1 | 2>;
+    render(): TemplateResult;
 }

@@ -1,10 +1,14 @@
-import {UISchemaUIElementType} from "../uischema";
+import {ApiTimeZoneInfo, UISchemaUIElementType} from "../uischema";
 import {html, TemplateResult} from "lit";
 import {UIElementRenderContext} from "../uielementrendercontext";
 
 export class UIElement {
     static haulData(context: UIElementRenderContext, value?: string, id?: string):any {
         return context.haulData(value, id)
+    }
+
+    static getTimeZoneInfo(context: UIElementRenderContext, tzIndex: number):ApiTimeZoneInfo | undefined {
+        return context.getTimeZoneInfo(tzIndex)
     }
 
     static devInfo(context: UIElementRenderContext, ...texts: Array<string|undefined>) {

@@ -1,5 +1,5 @@
 import {UIComponent} from "./ui-component";
-import {UIInputData, UILayout, UISchemaUIElement} from "./uischema";
+import {ApiTimeZoneInfo, UIInputData, UILayout, UISchemaUIElement} from "./uischema";
 import {UILayoutClass} from "./layoutclasses";
 import {replaceData} from "./tools";
 
@@ -23,9 +23,17 @@ export class RenderContext {
         value = replaceData(value, this.data)
         if (!!this.uicomponent.dataProvider && value != undefined) {
             value = this.uicomponent.dataProvider(value, id)
-            console.log(`Dataprovider returned ${value}`)
+            // console.log(`Dataprovider returned ${value}`)
         }
         return value
+    }
+
+    public getTimeZoneInfo(tzIndex: number|undefined) : ApiTimeZoneInfo | undefined {
+        let rc = undefined
+        if (!!this.uicomponent.timeZoneInfoProvider && tzIndex != undefined) {
+            rc = this.uicomponent.timeZoneInfoProvider(tzIndex)
+        }
+        return rc
     }
 
     public resetCursor() {

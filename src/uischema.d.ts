@@ -10,6 +10,13 @@ interface Dictionary<T> {
     [Key: string]: T;
 }
 
+export declare interface ApiTimeZoneInfo {
+    tz_index: number,
+    tz_long: string,
+    tz_IANA: string,
+    deprecated: boolean
+}
+
 export declare interface UILayout {
     layout_settings?: UISchemaLayoutSettings
     ui_elements: Dictionary<UISchemaUIElement>
@@ -144,6 +151,8 @@ export declare interface UISchemaFile extends UISchemaUIElementType {
 export type UISchemaLookupProvider = (elementId: string, lookupSettings: UISchemaLookupSettings, params: ComboBoxDataProviderParams<any>, callback: ComboBoxDataProviderCallback<TItem>) => void;
 
 export type UIComponentDataProvider = (exp: string, id?: string) => any;
+
+export type UIComponentTimeZoneInfoProvider = (tzIndex: number) => ApiTimeZoneInfo;
 
 export type UIComponentMoveToNextRowProvider = (lastUID: string) => string;
 
