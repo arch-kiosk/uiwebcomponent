@@ -67,7 +67,7 @@ export class FileView extends (LitElement) {
      */
     observerCallback(entries: IntersectionObserverEntry[]) {
         // @ts-ignore
-        const isIntersecting = ({ isIntersecting }) => isIntersecting;
+        const isIntersecting = ({isIntersecting}) => isIntersecting;
         if (entries.some(isIntersecting)) {
             this.visible = true;
         }
@@ -81,11 +81,12 @@ export class FileView extends (LitElement) {
         // if IntersectionObserver is unavailable, simply load the image.
         if (!('IntersectionObserver' in window)) return this.visible = true;
         // Short-circuit if observer has already initialized.
+        // Short-circuit if observer has already initialized.
         if (this.observer) return;
         // Start loading the image 10px before it appears on screen
         const rootMargin = '10px';
         this.observer =
-            new IntersectionObserver(this.observerCallback, { rootMargin });
+            new IntersectionObserver(this.observerCallback, {rootMargin});
         this.observer.observe(this);
         return;
     }
@@ -101,8 +102,17 @@ export class FileView extends (LitElement) {
     }
 
     protected clicked() {
+        const ds = this.dataset
         this.dispatchEvent(new CustomEvent("select-image",
-            {bubbles: true, composed: true, detail: this.uuid_file}));
+            {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    uuid: this.uuid_file,
+                    width: ds.width ?? "0",
+                    height: ds.height ?? "0"
+                }
+            }));
     }
 
     protected willUpdate(_changedProperties: PropertyValues) {
@@ -121,11 +131,10 @@ export class FileView extends (LitElement) {
         this.url = url
     }
 
-
     fetch_image() {
         this.url = ""
 
-        const detail:UIComponentFileFetchParams = {
+        const detail: UIComponentFileFetchParams = {
             uuid: this.uuid_file,
             resolution: this.resolution,
             reportURL: this.reportURL.bind(this)
@@ -139,15 +148,15 @@ export class FileView extends (LitElement) {
 
     load_image() {
         if (this.resolution && this.uuid_file) {
-            if  (this.visible) {
+            if (this.visible) {
                 this.fetch_image()
             }
         }
     }
 
     render_image() {
-        let cssStyle: string  = ""
-        switch(this.fitContent) {
+        let cssStyle: string = ""
+        switch (this.fitContent) {
             case "fit":
                 cssStyle = "object-fit: scale-down;max-width:100%"
                 break
@@ -158,22 +167,22 @@ export class FileView extends (LitElement) {
                 cssStyle = "object-fit: contain"
         }
 
-        return this.visible?html`
-            <img style="${cssStyle}" 
-                 @click="${this.clicked}" src="${this.url}" 
-                 alt="${this.description}"/>`:nothing
+        return this.visible ? html`
+            <img style="${cssStyle}"
+                 @click="${this.clicked}" src="${this.url}"
+                 alt="${this.description}"/>` : nothing
     }
 
     render_placeholder() {
-        return this.visible?html`
-            <div class="placeholder"><i class="fa fa-camera"></i></div>`:nothing
+        return this.visible ? html`
+            <div class="placeholder"><i class="fa fa-camera"></i></div>` : nothing
     }
 
     render() {
         return html`
-                    ${this.url
-                            ? this.render_image()
-                            : this.render_placeholder()}
-                    </div>`
+            ${this.url
+                    ? this.render_image()
+                    : this.render_placeholder()}
+            </div>`
     }
 }

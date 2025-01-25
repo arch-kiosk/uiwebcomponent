@@ -20,11 +20,27 @@ export class UIElementFile extends UIElement {
             // }
             let value = this.haulData(context, context.entry.element_type.value)
             let text = this.haulData(context, context.entry.element_type.text)
-            let description = this.haulData(context, `#($/images/descriptions/${value})`)
+            let descriptionObject = this.haulData(context, `#($/images/descriptions/${value})`)
+            let description: string = ""
+            let width: number = 0
+            let height: number = 0
             let htmlClass = this.getStyleSetting(context.entry.element_type, "classes", "")
             let cssStyle = this.addStyle("", this.getStyleTextAlign(context.entry.element_type))
             let imageElement = context.entry.element_type as UISchemaFile
             let alignFileDescription = imageElement.file_description || "bottom"
+
+            console.log(descriptionObject)
+            if (typeof descriptionObject === "string") {
+                description = descriptionObject
+            } else {
+                if (descriptionObject?.hasOwnProperty("description")) {
+                    description = descriptionObject["description"]
+                }
+                if (descriptionObject?.hasOwnProperty("attributes")) {
+                    height = descriptionObject.attributes?.height ?? 0
+                    width = descriptionObject.attributes?.width ?? 0
+                }
+            }
 
             if (context.entry.layout?.max_height) {
                 cssStyle = this.addStyle(cssStyle, `max-height: ${context.entry.layout.max_height === "max"? "" : context.entry.layout.max_height + "px"}`)
@@ -44,7 +60,8 @@ export class UIElementFile extends UIElement {
                                 resolution="${imageElement.resolution}" 
                                 description=${description} 
                                 fitcontent="${imageElement.fit_content || 'contain'}"
-                                @fetchfile="${context.uicomponent.fetchFile}">
+                                @fetchfile="${context.uicomponent.fetchFile}"
+                                data-width="${width}" data-height="${height}">
                         </file-view>`:nothing}
                     </div>
                     ${(alignFileDescription === "bottom" && description)?html`

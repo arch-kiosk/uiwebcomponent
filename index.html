@@ -243,7 +243,10 @@
 
     function initDayplanListStuff(ui) {
       nonrows = {"unit/term_for_unit": "area",
-      "$/images/descriptions/cb5cbb5f-5c7f-4836-8ce7-9a78ac6cf408": "my description\ndescription line 2"}
+      "$/images/descriptions/cb5cbb5f-5c7f-4836-8ce7-9a78ac6cf408": {description: "my description\ndescription line 2", attributes: {
+          height: 400,
+          width: 300
+        }}}
 
       for (let i=0;i<50;i++) {
         rows.push({
