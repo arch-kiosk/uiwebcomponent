@@ -1,7 +1,7 @@
 {
   "name": "uicomponent",
   "private": true,
-  "version": "0.6.5",
+  "version": "0.6.6",
   "type": "module",
   "main": "./dist/uicomponent.js",
   "module": "./dist/uicomponent.js",

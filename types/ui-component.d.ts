@@ -54,6 +54,12 @@ export declare class UIComponent extends LitElement {
     fieldChangedById(id: string): void;
     fieldChanged(e: Event): void;
     getLayoutClass(layoutElementId: string, layoutSettings?: UISchemaLayoutSettings, inheritReadOnly?: boolean): UILayoutClass;
+    /**
+     *
+     * @param id the id here is the id of the element in the element tree of the ui definition! It is not a unique id within the html document.
+     * @param entry
+     * @param layouter
+     */
     renderUIElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult;
     renderElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass): TemplateResult;
     getPaddingStyle(padding?: string | number | UISchemaLayoutPadding): string;

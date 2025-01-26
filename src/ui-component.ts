@@ -396,6 +396,12 @@ export class UIComponent extends LitElement {
             return new UIColumnLayoutClass(layoutElementId, layoutSettings)
     }
 
+    /**
+     *
+     * @param id the id here is the id of the element in the element tree of the ui definition! It is not a unique id within the html document.
+     * @param entry
+     * @param layouter
+     */
     renderUIElement(id: string, entry: UISchemaUIElement, layouter: UILayoutClass) {
         try {
             if (!this.uiElementFactory) {
