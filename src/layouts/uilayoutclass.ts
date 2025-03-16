@@ -76,6 +76,7 @@ export abstract class UILayoutClass {
         try {
             if (layoutSchema.layout_settings?.order) {
                 const allElements = [...Object.keys(layoutSchema.ui_elements)]
+                allElements.sort()
                 const orderedElements = [...layoutSchema.layout_settings.order]
                 const result: Array<string> = []
                 for (const orderedElementId of orderedElements) {
@@ -97,7 +98,9 @@ export abstract class UILayoutClass {
 
                 return result;
             } else {
-                return Object.keys(layoutSchema.ui_elements)
+                const allElements = [...Object.keys(layoutSchema.ui_elements)]
+                allElements.sort()
+                return allElements
             }
         } catch (e) {
             throw `UILayoutClass.getOrderedElements for layout ${this._id}: ${e}`

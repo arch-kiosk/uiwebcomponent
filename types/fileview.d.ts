@@ -6,6 +6,7 @@ export declare class FileView extends FileView_base {
     private observer?;
     constructor();
     private visible;
+    private loadError;
     uuid_file: string;
     resolution: string;
     description: string;
@@ -32,11 +33,12 @@ export declare class FileView extends FileView_base {
     protected clicked(): void;
     protected willUpdate(_changedProperties: PropertyValues): void;
     protected firstUpdated(): void;
-    reportURL(url: string): void;
+    reportURL(url: string | null | unknown): void;
     fetch_image(): void;
     load_image(): void;
-    render_image(): import("lit-html").TemplateResult<1> | typeof nothing;
-    render_placeholder(): import("lit-html").TemplateResult<1> | typeof nothing;
+    renderImage(): import("lit-html").TemplateResult<1> | typeof nothing;
+    renderPlaceholder(): import("lit-html").TemplateResult<1> | typeof nothing;
+    renderLoadError(): import("lit-html").TemplateResult<1> | typeof nothing;
     render(): import("lit-html").TemplateResult<1>;
 }
 export {};

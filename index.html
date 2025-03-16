@@ -9,7 +9,8 @@
 <!--    <script src="/unit-sheet.js"></script>-->
 <!--<script src="/small_find_kaputt.js"></script>-->
 <!--<script src="/unit-list.js"></script>-->
-    <script src="/dayplans.js"></script>
+<script src="/dayplans.js"></script>
+<!--    <script src="/fieldorder.js"></script> -->
 <!--    <script src="/locus-list-kaputt.js"></script>-->
 <!--   <script src="/test-json.js"></script> -->
     <title>UI Component Test</title>
@@ -69,6 +70,23 @@
       //   console.log(`DataProvider:${exp}, ${id}`)
       // }
 
+
+    }
+
+    function initFieldOrderStuff(ui) {
+      const data = {
+        "from_date": "2021-02-28",
+        "to_date": "2024-02-28",
+      }
+      ui.data = data
+      ui.dataProvider = (exp, id) => {
+        console.log("dataProvider", exp, id)
+        return data[exp]?data[exp]:exp
+      }
+
+      ui.addEventListener("dataChanged", (event) => {
+        console.log(event.detail.srcElement, event.detail.newData)
+      })
 
     }
 
@@ -252,7 +270,7 @@
         rows.push({
           "dayplan/uid_unit": "42f01bcc-8086-4334-9078-fa5531b1f8aa",
           "dayplan/image_description": `description ${i}`,
-          "dayplan/uid_image": null, // "cb5cbb5f-5c7f-4836-8ce7-9a78ac6cf408",
+          "dayplan/uid_image": "cb5cbb5f-5c7f-4836-8ce7-9a78ac6cf408",
           "dayplan/uid": `${i}`,
           "dayplan/created": "2023-07-19T06:52:10.952893",
           "dayplan/modified": "2023-07-19T06:52:10.952893",
@@ -300,10 +318,15 @@
 
       ui.fetchFileProvider = (params) => {
         console.log("FetchFileProvider",params)
-        setTimeout(() => {
-          // params.reportURL("/block2.png")
-          params.reportURL("/spider_red.png")
-        }, 500)
+        return
+        if (params.uid_file === 'cb5cbb5f-5c7f-4836-8ce7-9a78ac6cf408') {
+          setTimeout(() => {
+            // params.reportURL("/block2.png")
+            params.reportURL("/spider_red.png")
+          }, 500)
+        } else {
+          params.reportURL(null)
+        }
       }
 
     }
@@ -383,6 +406,7 @@
     // initLocusListStuff(ui)
     initDayplanListStuff(ui)
     // initSiteSheetStuff(ui)
+    // initFieldOrderStuff(ui)
     ui.uiSchema = ui_schema
     ui.showDevelopmentInfo=true
     ui.addEventListener("goto-identifier", (event) => {

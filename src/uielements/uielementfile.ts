@@ -48,6 +48,9 @@ export class UIElementFile extends UIElement {
             if (context.entry.layout?.max_width) {
                 cssStyle = this.addStyle(cssStyle, `max-width: ${context.entry.layout.max_width === "max"? "" : context.entry.layout.max_width + "px"}`)
             }
+            // if (!value && !description) {
+            //     return html`${nothing}`
+            // }
 
             return context.layouter.renderElement(context.entry.layout, html`
                 ${this.renderLabel(context, id, text)}

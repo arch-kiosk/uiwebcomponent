@@ -148,6 +148,7 @@ thead
   //font-size: .9em
   font-weight: normal
   flex-direction: row
+  z-index: 5
 th
   position: sticky
   top: 0
@@ -157,6 +158,7 @@ th
   background-color: $col-bg-1-lighter
   color: $col-accent-bg-1
   padding: 2px 4px
+  z-index: 5
 .table-header-icon-secondary
   @extend .table-header-icon
   background-color: $col-bg-1-darker
@@ -276,8 +278,3 @@ vaadin-date-picker > input:disabled, vaadin-time-picker > input:disabled, vaadin
   font-size: $font-size-standard
   font-weight: normal
 
-.file-broken
-  display: flex
-  width: 64px
-  height: 64px
-  position: relative
