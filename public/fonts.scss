@@ -147,3 +147,8 @@
 /*       url('/static/assets/fonts/ubuntu/ubuntu-v11-latin-700.ttf') format('truetype'), !* Safari, Android, iOS *!*/
 /*       url('/static/assets/fonts/ubuntu/ubuntu-v11-latin-700.svg#Ubuntu') format('svg'); !* Legacy iOS *!*/
 /*}*/
+
+$fa-font-path: "/fonts/fontawesome6";
+@import "styles/fontawesome-free-6.4.0-web/scss/solid";
+@import "styles/fontawesome-free-6.4.0-web/scss/regular";
+@import "styles/fontawesome-free-6.4.0-web/scss/fontawesome";

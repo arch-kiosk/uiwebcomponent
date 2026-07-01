@@ -6,13 +6,13 @@
     <link rel="stylesheet" href="/defaults.css">
     <link rel="stylesheet" href="/test.css">
     <script type="module" src="/src/ui-component.ts"></script>
-    <script src="/unit-sheet.js"></script>
+<!--    <script src="/unit-sheet.js"></script>-->
 <!--<script src="/small_find_kaputt.js"></script>-->
       <!--<script src="/unit-list.js"></script> -->
       <!-- <script src="/dayplans.js"></script> -->
 <!--    <script src="/fieldorder.js"></script> -->
     <!--<script src="/locus-list-kaputt.js"></script>-->
-<!--   <script src="/test-json.js"></script>-->
+   <script src="/test-json.js"></script>
     <title>UI Component Test</title>
   </head>
   <body>
@@ -37,6 +37,8 @@
         "e2": "#(asdf)",
         "e3": "2012-02-28",
         "e4": "2012-02-28T00:15",
+        "test_identifier": "a rather longish identifier",
+        "mask_identifier": "### masked ###",
         "myBool": false,
         "e5TemplateLabel": "This is my template label"}
       ui.data = data
@@ -403,8 +405,8 @@
     let ui = document.getElementById("ui")
     // ui_schema = JSON.parse(json)
     console.log(ui_schema)
-    // initTestJsonStuff(ui)
-    initUnitSheetStuff(ui)
+    initTestJsonStuff(ui)
+    // initUnitSheetStuff(ui)
     // initSmallFindSheetStuff(ui)
     // initUnitListStuff(ui)
     // initLocusListStuff(ui)

@@ -117,6 +117,27 @@ ui_schema = {
                             }
                         }
                     },
+                    "eid": {
+                        "binding": {
+                            "field_name": "test_identifier"
+                        },
+                        "layout": {
+                            "min_width": "max"
+                        },
+                        "element_type": {
+                            "name": "TextField",
+                            "value": "${test_identifier}",
+                            "text": "id",
+                            "readonly": true,
+                            "is_identifier": true,
+                            // "mask_identifier": "${mask_identifier}",
+                            // "max_characters": 122,
+                            "style": {
+                                "classes": "light-background",
+                                "text-align": "left"
+                            }
+                        }
+                    },
                     "e3": {
                         "binding": {
                             "field_name": "modified"

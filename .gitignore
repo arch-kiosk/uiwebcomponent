@@ -32,3 +32,5 @@ dist-ssr
 /public/**/*.css
 /public/**/*.css.map
 *.mjs
+/public/fonts
+/public/styles
