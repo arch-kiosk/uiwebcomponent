@@ -46,6 +46,15 @@ export class UIElement {
         return false
     }
 
+    static maskIdentifier(context: UIElementRenderContext) {
+        if (context.uicomponent.linkIdentifiers) {
+            if (context.entry.element_type.mask_identifier) {
+                return context.entry.element_type.mask_identifier
+            }
+        }
+        return ""
+    }
+
     static getStyleSetting(element: UISchemaUIElementType, attribute: string, _default: string): string {
         if (element.style) {
             if (element.style.hasOwnProperty(attribute)) {

@@ -15,6 +15,7 @@ export class UIElementTextField extends UIElement {
     static render(context: UIElementRenderContext, id: string) {
         try {
             let value = this.haulData(context, context.entry.element_type.value, id)
+            let maskedValue = null
 
             if (!this.isVisible(context, value)) {
                 return html`${nothing}`
@@ -29,7 +30,19 @@ export class UIElementTextField extends UIElement {
             if (this.isIdentifier(context)) {
                 htmlClass = (htmlClass?" ":"") + "identifier-link"
             }
-
+            if (this.maskIdentifier(context)) {
+                maskedValue = this.haulData(context, this.maskIdentifier(context), id)
+            }
+            if (context.entry.element_type.max_characters) {
+                if (typeof value === "string" && value.length > context.entry.element_type.max_characters) {
+                    value = value
+                        .slice(0, context.entry.element_type.max_characters)
+                        .trim().split(" ")
+                        .slice(0, -1)
+                        .join(" ") + "...";
+                    console.log("value",value)
+                }
+            }
             if ((context.entry.element_type as UISchemaTexTField).multiline) {
                 if (typeof value === "string") {
                     value = value.replaceAll("\r\n", "\n")
@@ -54,7 +67,12 @@ export class UIElementTextField extends UIElement {
                         <div style="${cssStyle ? cssStyle : nothing}" id=${id} 
                              class="read-only-textarea ${htmlClass}"
                              data-identifier="${isIdentifier?value:nothing}"
-                             @click="${isIdentifier?context.uicomponent.gotoIdentifier:nothing}"><span>${isIdentifier?html`<i class="footsteps"></i>`:nothing}<span>${value || nothing}</span></span></div>
+                             @click="${isIdentifier?context.uicomponent.gotoIdentifier:nothing}">
+                            <span>${isIdentifier?html`<i class="footsteps"></i>`:nothing}${
+                                    (isIdentifier && maskedValue)?maskedValue || nothing:html`${value || nothing}`
+                                  }
+                            </span>
+                        </div>
                     `)
                 } else {
                     return context.layouter.renderElement(context.entry.layout, html`

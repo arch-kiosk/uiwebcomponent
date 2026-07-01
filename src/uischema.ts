@@ -87,7 +87,9 @@ export declare interface UISchemaUIElementType {
     name: string
     enabled?: boolean
     is_identifier?: boolean
+    mask_identifier?: string
     text?: string
+    max_characters?: number,
     value?: string
     visible?: string
     style?: {[key:string]: string}
